@@ -1,0 +1,488 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        
+        "BaseNetRGName": {
+            "type": "string"
+        } ,
+        "RGNameADFS": {
+            "type": "string"
+        } ,
+        "RGLocation": {
+            "type": "string"
+        } ,
+        "VNetName": {
+            "type": "string"
+        } ,
+        "VNetAddress": {
+            "type": "string"
+        } ,
+        "ADFSVMSize": {
+            "type": "string"
+        } ,
+        "ADFSVMSKU": {
+            "type": "string"
+        } ,
+        "ADFSSubnetName": {
+            "type": "string"
+        } ,
+        "ADFSSubnetAddress": {
+            "type": "string"
+        } ,
+        "ADFSDNSIP": {
+            "type": "string"
+        } ,
+        "ADFS1Name": {
+            "type": "string"
+        } ,
+        "ADFS1IPAddress": {
+            "type": "string"
+        } ,
+        "ADFS2Name": {
+            "type": "string"
+        } ,
+        "ADFS2IPAddress": {
+            "type": "string"
+        } ,
+        "LocalAdminUsername": {
+            "type": "string"
+        },
+        "LocalAdminPassword": {
+            "type": "securestring"
+        },
+        "DomainJoinUsername": {
+            "type": "string"
+        },
+        "DomainJoinPassword": {
+            "type": "securestring"
+        },
+        "ADFSSvcUsername": {
+            "type": "string"
+        },
+        "ADFSSvcPassword": {
+            "type": "securestring"
+        },
+        "DomainFQDN": {
+            "type": "string"
+        },
+        "DomainNETBIOS": {
+            "type": "string"
+        },
+        "ADFSUrl": {
+            "type": "string"
+        },
+        "CertFolderPath": {
+            "type": "string"
+        },
+        "PFXFilePath": {
+            "type": "string"
+        },
+        "PFXPassword": {
+            "type": "securestring"
+        },
+        "OUPath": {
+            "type": "securestring"
+        },
+        "nesteddomainjoinurl": {
+            "type": "securestring"
+        },
+        "domainJoinOptions": {
+            "type": "string",
+            "defaultValue": "3",
+            "metadata": {
+                "description": "Set of bit flags that define the join options. Default value of 3 is a combination of NETSETUP_JOIN_DOMAIN (0x00000001) & NETSETUP_ACCT_CREATE (0x00000002) i.e. will join the domain and create the account on the domain. For more information see https://msdn.microsoft.com/en-us/library/aa392154(v=vs.85).aspx"
+              }
+        },
+        "adfsDSCConfigurationurl": {
+            "type": "string"
+        },
+        "DeployADFSFarmTemplateUri": {
+            "type": "string"
+        },
+        "DeployADFSFarmTemplateName": {
+            "type": "string"
+        },
+        "DscExtensionUpdateTagVersion": {
+            "type": "string"
+        }
+
+
+    },
+    "variables": {
+
+        
+        "ADFS1VMName": "[concat('vm-',parameters('ADFS1Name'))]",
+        "ADFS2VMName": "[concat('vm-',parameters('ADFS2Name'))]",
+        "ADFS1VMOSDiskName": "[concat(variables('ADFS1VMName'),'-OSDisk')]",
+        "ADFS2VMOSDiskName": "[concat(variables('ADFS2VMName'),'-OSDisk')]",
+        "ADFS1VMNic": "[concat('nic-',variables('ADFS1VMName'))]",
+        "ADFS2VMNic": "[concat('nic-',variables('ADFS2VMName'))]",
+        "AvailabilitySetADFS": "as-adfs",
+        "storageAccountNameADFS": "[uniqueString(resourceGroup().id)]",
+        "vnetRef": "[resourceId(parameters('BaseNetRGName'), 'Microsoft.Network/virtualNetworks', parameters('VNetName'))]",
+        "subnetRefadfs": "[concat(variables('vnetRef'),'/subnets/', parameters('ADFSSubnetName'))]"  
+
+    },
+    "resources": [
+        {
+            "apiVersion": "2018-02-01",
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountNameADFS')]",
+            "location": "[parameters('RGLocation')]",
+            "kind": "Storage",
+            "sku": {
+              "name": "Standard_LRS"
+            }
+        },
+        {
+            "comments": "Availability set",
+            "type": "Microsoft.Compute/availabilitySets",
+            "sku": {
+                "name": "Aligned"
+            },
+            "name": "[variables('AvailabilitySetADFS')]",
+            "apiVersion": "2018-06-01",
+            "location": "[parameters('RGLocation')]",
+            "scale": null,
+            "properties": {
+                "platformUpdateDomainCount": 5,
+                "platformFaultDomainCount": 2
+            },
+            "dependsOn": []
+        },        
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-08-01",
+            "name": "[variables('ADFS1VMNic')]",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                {
+                    "name": "ipconfig1",
+                    "properties": {
+                        "privateIPAllocationMethod": "Static",
+                        "privateIPAddress": "[parameters('ADFS1IPAddress')]",
+                        "subnet": {
+                            "id": "[variables('subnetRefadfs')]"
+                        },
+                        "applicationSecurityGroups": [
+                        ]
+                    }
+                }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [
+                        "[parameters('ADFSDNSIP')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2018-08-01",
+            "name": "[variables('ADFS2VMNic')]",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+            ],
+            "properties": {
+                "ipConfigurations": [
+                {
+                    "name": "ipconfig1",
+                    "properties": {
+                        "privateIPAllocationMethod": "Static",
+                        "privateIPAddress": "[parameters('ADFS2IPAddress')]",
+                        "subnet": {
+                            "id": "[variables('subnetRefadfs')]"
+                        },
+                        "applicationSecurityGroups": [
+                        ]
+                    }
+                }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [
+                        "[parameters('ADFSDNSIP')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('ADFS1VMName')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('ADFSVMSize')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "[parameters('ADFSVMSKU')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[variables('ADFS1VMOSDiskName')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [ ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('ADFS1Name')]",
+                    "adminUsername": "[parameters('LocalAdminUsername')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('LocalAdminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS1VMNic'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                      "enabled": true,
+                      "storageUri": "[reference(variables('storageAccountNameADFS')).primaryEndpoints.blob]"
+                    }
+                  }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS1VMNic'))]",
+                "[variables('storageAccountNameADFS')]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('ADFS2VMName')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('ADFSVMSize')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "[parameters('ADFSVMSKU')]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[variables('ADFS2VMOSDiskName')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [ ]
+                },
+                "osProfile": {
+                    "computerName": "[parameters('ADFS2Name')]",
+                    "adminUsername": "[parameters('LocalAdminUsername')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true
+                    },
+                    "secrets": [],
+                    "adminPassword": "[parameters('LocalAdminPassword')]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS2VMNic'))]"
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                      "enabled": true,
+                      "storageUri": "[reference(variables('storageAccountNameADFS')).primaryEndpoints.blob]"
+                    }
+                  }
+            },
+            "resources": [],
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS1VMNic'))]",
+                "[variables('storageAccountNameADFS')]"
+            ]
+        },
+        {
+            "comments": "Join domain - JsonADDomainExtension",
+            "apiVersion": "2018-10-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('ADFS1VMName'),'/joindomain')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS1VMName'))]"
+            ],
+            "location": "[parameters('RGLocation')]",
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "JsonADDomainExtension",
+              "typeHandlerVersion": "1.3",
+              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "Name": "[parameters('domainFQDN')]",
+                "User": "[parameters('DomainJoinUsername')]",
+                "Restart": "true",
+                "Options": "[parameters('domainJoinOptions')]",
+                "OUPath": "[parameters('ouPath')]"
+              },
+              "protectedSettings": {
+                "Password": "[parameters('DomainJoinPassword')]"
+              }
+            }
+        },
+        {
+            "comments": "Join domain - JsonADDomainExtension",
+            "apiVersion": "2018-10-01",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('ADFS2VMName'),'/joindomain')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]"
+            ],
+            "location": "[parameters('RGLocation')]",
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "JsonADDomainExtension",
+              "typeHandlerVersion": "1.3",
+              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "Name": "[parameters('domainFQDN')]",
+                "User": "[parameters('DomainJoinUsername')]",
+                "Restart": "true",
+                "Options": "[parameters('domainJoinOptions')]",
+                "OUPath": "[parameters('ouPath')]"
+              },
+              "protectedSettings": {
+                "Password": "[parameters('DomainJoinPassword')]"
+              }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('ADFS1VMName'),'/ConfigureADFS')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS1VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'joindomain')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
+                    "ConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
+                    "Properties": {
+                        "AdminCreds": {
+                            "UserName": "[parameters('DomainJoinUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('DomainJoinPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
+            }
+            
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('ADFS2VMName'),'/ConfigureADFS')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'joindomain')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
+                    "ConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
+                    "Properties": {
+                        "AdminCreds": {
+                            "UserName": "[parameters('DomainJoinUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        }
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('DomainJoinPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
+            }
+            
+        },
+        {
+            "name": "[concat(variables('ADFS1VMName'), '/InstallADFS')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('RGLocation')]",
+            "apiVersion": "2018-10-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ConfigureADFS')]"
+            ],
+            "tags": {
+              "displayName": "DeployADFSFarm"
+            },
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.9",
+              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "[parameters('DeployADFSFarmTemplateUri')]"
+                ]
+              },
+              "protectedSettings": {
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployADFSFarmTemplateName'), ' -AdminUsername ', parameters('LocalAdminUsername'), ' -AdminPassword ', parameters('LocalAdminPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
+              }
+            }
+        } 
+    ]
+}
