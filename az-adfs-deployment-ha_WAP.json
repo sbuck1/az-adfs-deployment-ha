@@ -549,8 +549,7 @@
             "location": "[parameters('RGLocation')]",
             "apiVersion": "2018-10-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'ConfigureWAP')]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'InstallADFS')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'ConfigureWAP')]"
             ],
             "tags": {
               "displayName": "DeployWAPFarm"
