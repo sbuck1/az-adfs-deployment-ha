@@ -96,8 +96,10 @@ $deployparmsADFS=@{
     "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
     "nesteddomainjoinurl"        = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
     "adfsDSCConfigurationurl"    = "$($GitAssetLocation)DSC/adfsDSCConfiguration.zip"
-    "DeployADFSFarmTemplateName" = "InstallADFS.ps1"
-    "DeployADFSFarmTemplateUri"  = "$($GitAssetLocation)Scripts/InstallADFS.ps1"
+    "DeployADFSFarmTemplateName" = "ADFS_1_Install.ps1"
+    "DeployADFSFarmTemplateUri"  = "$($GitAssetLocation)Scripts/ADFS_1_Install.ps1"
+    "JoinADFSFarmTemplateName"   = "ADFS_2_JoinFarm.ps1"
+    "JoinADFSFarmTemplateUri"    = "$($GitAssetLocation)Scripts/ADFS_2_JoinFarm.ps1"
     "DscExtensionUpdateTagVersion" = $guid
 }
 $deployparmsWAP=@{
@@ -119,15 +121,12 @@ $deployparmsWAP=@{
     "OUPath"                     = $ConfigFileContent.Settings.Domain.OU
     "LocalAdminUsername"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
     "LocalAdminPassword"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
-    "DomainJoinUsername"         = $ConfigFileContent.Settings.Credentials.DomainJoin.Username
-    "DomainJoinPassword"         = $ConfigFileContent.Settings.Credentials.DomainJoin.Password
     "ADFSUrl"                    = $ConfigFileContent.Settings.ADFSConf.URL
     "CertFolderPath"             = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
     "ADFSSvcUsername"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
     "ADFSSvcPassword"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
-    "nesteddomainjoinurl"        = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
     "wapDSCConfigurationurl"     = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
     "DeployWAPFarmTemplateName" = "InstallWAP.ps1"
     "DeployWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/InstallWAP.ps1"
@@ -161,7 +160,7 @@ $version ++
 
 try{
     
-    #$deploymentADFS = New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
+    $deploymentADFS = New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
     $deploymentWAP = New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{

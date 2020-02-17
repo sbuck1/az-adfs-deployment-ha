@@ -103,6 +103,12 @@
         "DeployADFSFarmTemplateName": {
             "type": "string"
         },
+        "JoinADFSFarmTemplateName": {
+            "type": "string"
+        },
+        "JoinADFSFarmTemplateUri": {
+            "type": "string"
+        },
         "DscExtensionUpdateTagVersion": {
             "type": "string"
         }
@@ -483,6 +489,34 @@
                 "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployADFSFarmTemplateName'), ' -AdminUsername ', parameters('LocalAdminUsername'), ' -AdminPassword ', parameters('LocalAdminPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
               }
             }
-        } 
+        },
+        {
+            "name": "[concat(variables('ADFS2VMName'), '/JoinADFS')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('RGLocation')]",
+            "apiVersion": "2018-10-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'ConfigureADFS')]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'InstallADFS')]"
+            ],
+            "tags": {
+              "displayName": "DeployADFSFarm"
+            },
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.9",
+              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "[parameters('DeployADFSFarmTemplateUri')]"
+                ]
+              },
+              "protectedSettings": {
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployADFSFarmTemplateName'), ' -AdminUsername ', parameters('LocalAdminUsername'), ' -AdminPassword ', parameters('LocalAdminPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
+              }
+            }
+        }  
     ]
 }
