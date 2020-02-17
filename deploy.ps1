@@ -183,4 +183,4 @@ $Pip = $Pip.IPAddress
 # Update your hosts file or public DNS with the following settings:
 write-host "Update your hosts file or public DNS with the following settings:"
 write-host "DNS Name  :   $ADFSUrl"
-write-host "IP        :   $Pip"
+write-host "IP        :   $Pip" 
