@@ -133,8 +133,8 @@ if (!(Test-Path -Path "$($completeFile)0")) {
 	try{
 		net use "$PathToCert" $ADFSsvcpassword /USER:$ADFSsvcusername
 		DS_WriteLog "I" "Net Use Successful" $LogFile
-		Copy-Item -Path "$PathToCert\*.pfx" -Destination "c:\temp\" -Recurse -Force
-		Copy-Item -Path "$PathToCert\*.cer" -Destination "c:\temp\" -Recurse -Force
+		Copy-Item -Path "$PathToCert\*.pfx" -Destination "c:\temp\" -Recurse -Force -ErrorAction Stop
+		Copy-Item -Path "$PathToCert\*.cer" -Destination "c:\temp\" -Recurse -Force -ErrorAction Stop
 		DS_WriteLog "I" "Copied Certificates successful" $LogFile
 	}catch{
 		DS_WriteLog "E" "Error, copying certificates (error: $($Error[0]))" $LogFile
