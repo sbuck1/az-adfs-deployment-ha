@@ -171,7 +171,7 @@ try{
     $adfsfarm = Add-AdfsFarmNode `
         -Credential $DomainCreds `
         -PrimaryComputerName $PrimaryADFSServer `
-        -PrimaryComputerPort 443 `
+        -PrimaryComputerPort 80 `
         -ServiceAccountCredential $ADFSSvcCreds `
         -CertificateThumbprint $cert.Thumbprint
     
