@@ -63,6 +63,12 @@
         "ADFSSvcPassword": {
             "type": "securestring"
         },
+        "ADFSInstallUsername": {
+            "type": "string"
+        },
+        "ADFSInstallPassword": {
+            "type": "securestring"
+        },
         "DomainFQDN": {
             "type": "string"
         },
@@ -514,7 +520,7 @@
                 ]
               },
               "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployADFSFarmTemplateName'), ' -AdminUsername ', parameters('LocalAdminUsername'), ' -AdminPassword ', parameters('LocalAdminPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinADFSFarmTemplateName'), ' -AdminUsername ', parameters('ADFSInstallUsername'), ' -AdminPassword ', parameters('ADFSInstallPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
               }
             }
         }  

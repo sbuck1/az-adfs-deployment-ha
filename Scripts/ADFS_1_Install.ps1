@@ -96,6 +96,8 @@ $LogFile = Join-path $LogDir $LogFileName
 
 # BEGIN SCRIPT
 #==========================================================================
+DS_WriteLog "I" "-------------------------------------------------------------------------------------------------" $LogFile
+DS_WriteLog "I" "Start script" $LogFile
 
 $wmiDomain = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
 $ComputerName = $wmiDomain.PSComputerName
@@ -105,13 +107,30 @@ $FilepathPFX = $PFXFilePath
 
 $DomainName=$wmiDomain.DomainName
 $DomainNetbiosName = $DomainName.split('.')[0]
+DS_WriteLog "I" "PARAMETERS ##########################" $LogFile
+DS_WriteLog "I" "AdminUsername: $($AdminUsername)" $LogFile
+DS_WriteLog "I" "AdminPassword: $($AdminPassword)" $LogFile
+DS_WriteLog "I" "ADFSsvcusername: $($ADFSsvcusername)" $LogFile
+DS_WriteLog "I" "PFXFilePath: $($PFXFilePath)" $LogFile
+DS_WriteLog "I" "PFXPassword: $($PFXPassword)" $LogFile
+DS_WriteLog "I" "ADFSUrl: $($ADFSUrl)" $LogFile
+DS_WriteLog "I" "PARAMETERS ##########################" $LogFile
+
+DS_WriteLog "I" "VARIABLES ##########################" $LogFile
+DS_WriteLog "I" "Computername: $($Computername)" $LogFile
+DS_WriteLog "I" "Subject: $($Subject)" $LogFile
+DS_WriteLog "I" "PasswordPFX: $($PasswordPFX)" $LogFile
+DS_WriteLog "I" "FilepathPFX: $($FilepathPFX)" $LogFile
+DS_WriteLog "I" "DomainName: $($DomainName)" $LogFile
+DS_WriteLog "I" "DomainNetbiosName: $($DomainNetbiosName)" $LogFile
+DS_WriteLog "I" "VARIABLES ##########################" $LogFile
 
 # Create PSCredentials Object
 try{
     DS_WriteLog "I" "Create PSCredentiabls Object" $LogFile
     $SecAdminPw = ConvertTo-SecureString $AdminPassword -AsPlainText -Force
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${DomainNetbiosName}\$($AdminUsername)", $SecAdminPw)
-    DS_WriteLog "S" "$DomainCreds" $LogFile
+    DS_WriteLog "S" "Domaincreds: $($DomainCreds)" $LogFile
 }catch{
     DS_WriteLog "E" "Unable to create PSCredentials Object (error: $($Error[0]))" $LogFile
 	throw

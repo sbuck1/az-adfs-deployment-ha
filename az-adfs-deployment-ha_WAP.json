@@ -84,6 +84,12 @@
         "DeployWAPFarmTemplateName": {
             "type": "string"
         },
+        "JoinWAPFarmTemplateUri": {
+            "type": "string"
+        },
+        "JoinWAPFarmTemplateName": {
+            "type": "string"
+        },
         "DscExtensionUpdateTagVersion": {
             "type": "string"
         }
@@ -499,8 +505,35 @@
                 "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
               }
             }
+        },
+         {
+            "name": "[concat(variables('WAP2VMName'), '/JoinWAP')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "location": "[parameters('RGLocation')]",
+            "apiVersion": "2018-10-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP2VMName'), 'ConfigureWAP')]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'InstallWAP')]"
+            ],
+            "tags": {
+              "displayName": "DeployWAPFarm"
+            },
+            "properties": {
+              "publisher": "Microsoft.Compute",
+              "type": "CustomScriptExtension",
+              "typeHandlerVersion": "1.9",
+              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                "fileUris": [
+                  "[parameters('DeployWAPFarmTemplateUri')]"
+                ]
+              },
+              "protectedSettings": {
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
+              }
+            }
         }
-        
         
     ]
 }

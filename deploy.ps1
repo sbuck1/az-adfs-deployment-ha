@@ -92,6 +92,8 @@ $deployparmsADFS=@{
     "CertFolderPath"             = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
     "ADFSSvcUsername"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
     "ADFSSvcPassword"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
+    "ADFSInstallUsername"        = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Username
+    "ADFSInstallPassword"        = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Password
     "PFXFilePath"                = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
     "nesteddomainjoinurl"        = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
@@ -128,8 +130,10 @@ $deployparmsWAP=@{
     "PFXFilePath"                = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
     "wapDSCConfigurationurl"     = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
-    "DeployWAPFarmTemplateName" = "InstallWAP.ps1"
-    "DeployWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/InstallWAP.ps1"
+    "DeployWAPFarmTemplateName" = "WAP_1_Install.ps1"
+    "DeployWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/WAP_1_Install.ps1"
+    "JoinWAPFarmTemplateName" = "WAP_2_JoinFarm.ps1"
+    "JoinWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/WAP_2_JoinFarm.ps1"
     "DscExtensionUpdateTagVersion" = $guid
 }
 
