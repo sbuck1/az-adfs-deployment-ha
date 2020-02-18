@@ -75,6 +75,9 @@
         "DomainNETBIOS": {
             "type": "string"
         },
+        "LoadBalancerAddress": {
+            "type": "string"
+        },
         "ADFSUrl": {
             "type": "string"
         },
@@ -131,6 +134,7 @@
         "ADFS1VMNic": "[concat('nic-',variables('ADFS1VMName'))]",
         "ADFS2VMNic": "[concat('nic-',variables('ADFS2VMName'))]",
         "AvailabilitySetADFS": "as-adfs",
+        "LoadBalancerName": "lb-adfs",
         "storageAccountNameADFS": "[uniqueString(resourceGroup().id)]",
         "vnetRef": "[resourceId(parameters('BaseNetRGName'), 'Microsoft.Network/virtualNetworks', parameters('VNetName'))]",
         "subnetRefadfs": "[concat(variables('vnetRef'),'/subnets/', parameters('ADFSSubnetName'))]"  
@@ -162,6 +166,64 @@
                 "platformFaultDomainCount": 2
             },
             "dependsOn": []
+        },
+        {
+            "apiVersion": "2018-04-01",
+            "type": "Microsoft.Network/loadBalancers",
+            "name": "[variables('loadBalancerName')]",
+            "location": "[parameters('RGlocation')]",
+            "dependsOn": [
+            ],
+            "properties": {
+                "frontendIPConfigurations": [
+                {
+                    "properties": {
+                    "subnet": {
+                        "id": "[variables('subnetRefADFS')]"
+                    },
+                    "privateIPAddress": "[parameters('LoadBalancerAddress')]",
+                    "privateIPAllocationMethod": "Static"
+                    },
+                    "name": "LoadBalancerFrontend"
+                }
+                ],
+                "backendAddressPools": [
+                {
+                    "name": "BackendPool-LB-ADFS"
+                }
+                ],
+                "loadBalancingRules": [
+                {
+                    "properties": {
+                    "frontendIPConfiguration": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                    },
+                    "backendAddressPool": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/BackendPool-LB-ADFS')]"
+                    },
+                    "probe": {
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                    },
+                    "protocol": "Tcp",
+                    "frontendPort": 443,
+                    "backendPort": 443,
+                    "idleTimeoutInMinutes": 15
+                    },
+                    "Name": "lbrule"
+                }
+                ],
+                "probes": [
+                {
+                    "properties": {
+                    "protocol": "Tcp",
+                    "port": 443,
+                    "intervalInSeconds": 15,
+                    "numberOfProbes": 2
+                    },
+                    "name": "Healthprobe-LB-ADFS"
+                }
+                ]
+            }
         },        
         {
             "type": "Microsoft.Network/networkInterfaces",
@@ -169,7 +231,8 @@
             "name": "[variables('ADFS1VMNic')]",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('LoadBalancerName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -181,6 +244,11 @@
                         "subnet": {
                             "id": "[variables('subnetRefadfs')]"
                         },
+                        "loadBalancerBackendAddressPools": [
+                            {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('LoadBalancerName')), '/backendAddressPools/Backendpool-LB-ADFS')]"
+                            }
+                        ],
                         "applicationSecurityGroups": [
                         ]
                     }
@@ -199,7 +267,8 @@
             "name": "[variables('ADFS2VMNic')]",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]"
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('LoadBalancerName'))]"
             ],
             "properties": {
                 "ipConfigurations": [
@@ -211,6 +280,11 @@
                         "subnet": {
                             "id": "[variables('subnetRefadfs')]"
                         },
+                        "loadBalancerBackendAddressPools": [
+                            {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('LoadBalancerName')), '/backendAddressPools/Backendpool-LB-ADFS')]"
+                            }
+                        ],
                         "applicationSecurityGroups": [
                         ]
                     }

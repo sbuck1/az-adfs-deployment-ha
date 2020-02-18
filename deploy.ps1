@@ -88,6 +88,7 @@ $deployparmsADFS=@{
     "LocalAdminPassword"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
     "DomainJoinUsername"           = $ConfigFileContent.Settings.Credentials.DomainJoin.Username
     "DomainJoinPassword"           = $ConfigFileContent.Settings.Credentials.DomainJoin.Password
+    "LoadBalancerAddress"          = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "ADFSUrl"                      = $ConfigFileContent.Settings.ADFSConf.URL
     "CertFolderPath"               = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
     "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
@@ -142,6 +143,8 @@ foreach($param in $deployparms.GetEnumerator()){new-variable -name $param.name -
 
 #END SET UP AZURE PARAMETERS
 
+Remove-Variable $RGADFSNotPresent -Force -ErrorAction SilentlyContinue
+Remove-Variable $RGWAPNotPresent -Force -ErrorAction SilentlyContinue
 
 Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGADFSNotPresent -ErrorAction SilentlyContinue
 Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGWAPNotPresent -ErrorAction SilentlyContinue
@@ -156,15 +159,15 @@ try {
         New-AzResourceGroup -Name $RGNameWAP -Location $RGLocation
     }
 }catch{
-    
+
 }
 
 $version ++
 
 try{
     
-    $deploymentADFS = New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
-    $deploymentWAP = New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
+    New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
+    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{
     $error[0].Exception
