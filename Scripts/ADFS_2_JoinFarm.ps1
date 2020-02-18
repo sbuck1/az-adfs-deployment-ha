@@ -95,10 +95,16 @@ $PackageName = $($MyInvocation.MyCommand.Name)
 
 $LogDir = (Join-Path $BaseLogDir $PackageName).Replace(" ","_")
 $LogFileName = "$($PackageName).log"
+$LogFileName = "Transcript_$($PackageName).log"
 $LogFile = Join-path $LogDir $LogFileName
+$TranscriptFile = Join-path $LogDir $LogFileName
 
+Start-Transcript -Path $TranscriptFile
 # BEGIN SCRIPT
 #==========================================================================
+
+DS_WriteLog "I" "--------------------------------------------------------------------------------------" $LogFile
+DS_WriteLog "I" "Start script" $LogFile
 
 $wmiDomain = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
 $ComputerName = $wmiDomain.PSComputerName
@@ -108,6 +114,16 @@ $FilepathPFX = $PFXFilePath
 
 $DomainName=$wmiDomain.DomainName
 $DomainNetbiosName = $DomainName.split('.')[0]
+
+DS_WriteLog "I" "PARAMETERS ###############################" $LogFile
+DS_WriteLog "I" "AdminUsername: $($AdminUsername)" $LogFile
+DS_WriteLog "I" "AdminPassword: $($AdminPassword)" $LogFile
+DS_WriteLog "I" "ADFSsvcusername: $($ADFSsvcusername)" $LogFile
+DS_WriteLog "I" "ADFSsvcpassword: $($ADFSsvcpassword)" $LogFile
+DS_WriteLog "I" "PFXFilePath: $($PFXFilePath)" $LogFile
+DS_WriteLog "I" "PrimaryADFSServer: $($PrimaryADFSServer)" $LogFile
+DS_WriteLog "I" "ADFSUrl: $($ADFSUrl)" $LogFile
+DS_WriteLog "I" "PARAMETERS ###############################" $LogFile
 
 # Create PSCredentials Object
 try{
@@ -142,9 +158,16 @@ try{
 
     $SecadfsPw = ConvertTo-SecureString $ADFSsvcpassword -AsPlainText -Force
     [System.Management.Automation.PSCredential]$ADFSSvcCreds = New-Object System.Management.Automation.PSCredential ("${DomainNetbiosName}\$($ADFSsvcusername)", $SecadfsPw)
-
-    $Index = $ComputerName.Substring($ComputerName.Length-1,1)
     
+    
+    DS_WriteLog "I" "VARIABLES ###############################" $LogFile
+    DS_WriteLog "I" "ComputerName: $($ComputerName)" $LogFile
+    DS_WriteLog "I" "DomainName: $($AdminPassword)" $LogFile
+    DS_WriteLog "I" "DomainNetbiosName: $($DomainNetbiosName)" $LogFile
+    DS_WriteLog "I" "ADFSSvcCreds: $($ADFSSvcCreds)" $LogFile
+    DS_WriteLog "I" "Cert Thumbprint: $($cert.Thumbprint)" $LogFile
+    DS_WriteLog "I" "VARIABLES ###############################" $LogFile
+
     $adfsfarm = Add-AdfsFarmNode `
         -Credential $DomainCreds `
         -PrimaryComputerName $PrimaryADFSServer `
@@ -169,3 +192,5 @@ try{
 }catch{
     DS_WriteLog "E" "Unable to install ADFS Farm (error: $($Error[0]))" $LogFile
 }
+
+Stop-Transcript
