@@ -130,6 +130,7 @@ $deployparmsWAP=@{
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "LoadBalancerAddress"          = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
     "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
     "DeployWAPFarmTemplateUri"     = "$($GitAssetLocation)Scripts/WAP_1_Install.ps1"
