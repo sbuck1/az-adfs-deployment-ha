@@ -75,7 +75,7 @@
         "DomainNETBIOS": {
             "type": "string"
         },
-        "LoadBalancerAddress": {
+        "ADFSLoadBalancerAddress": {
             "type": "string"
         },
         "ADFSUrl": {
@@ -184,7 +184,7 @@
                     "subnet": {
                         "id": "[variables('subnetRefADFS')]"
                     },
-                    "privateIPAddress": "[parameters('LoadBalancerAddress')]",
+                    "privateIPAddress": "[parameters('ADFSLoadBalancerAddress')]",
                     "privateIPAllocationMethod": "Static"
                     },
                     "name": "LoadBalancerFrontend"

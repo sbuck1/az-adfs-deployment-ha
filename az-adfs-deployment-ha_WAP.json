@@ -72,7 +72,7 @@
         "PFXPassword": {
             "type": "securestring"
         },
-        "LoadBalancerAddress": {
+        "ADFSLoadBalancerAddress": {
             "type": "securestring"
         },
         "OUPath": {
@@ -533,7 +533,7 @@
                 ]
               },
               "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'), ' -LoadBalancerAddress ', parameters('LoadBalancerAddress'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'), ' -ADFSLoadBalancerAddress ', parameters('ADFSLoadBalancerAddress'))]"
               }
             }
         }

@@ -24,7 +24,7 @@
 	[string]$ADFSUrl,
 
 	[Parameter(Mandatory)]
-	[string]$LoadbalancerAddress
+	[string]$ADFSLoadbalancerAddress
 )
 
 # FUNCTION DS_WriteLog
@@ -190,8 +190,8 @@ if (!(Test-Path -Path "$($completeFile)1")) {
 
 	# Add Hosts entry
 	DS_WriteLog "I" "Add HOSTS Entry" $LogFile
-	If ((Get-Content "$($env:windir)\system32\Drivers\etc\hosts" ) -notcontains "$LoadBalancerAddress $ADFSUrl")   
- 		{Add-Content -Encoding UTF8  "$($env:windir)\system32\Drivers\etc\hosts" "$LoadBalancerAddress $ADFSUrl" }	
+	If ((Get-Content "$($env:windir)\system32\Drivers\etc\hosts" ) -notcontains "$ADFSLoadBalancerAddress $ADFSUrl")   
+ 		{Add-Content -Encoding UTF8  "$($env:windir)\system32\Drivers\etc\hosts" "$ADFSLoadBalancerAddress $ADFSUrl" }	
 
 	
 	DS_WriteLog "I" "Using the following certificate for the url ($ADFSUrl): $cert" $LogFile
