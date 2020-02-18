@@ -180,7 +180,7 @@ New-TimeSpan -Start $startTime -End $endTime | Select Hours, Minutes, Seconds
 # FINALIZE
 
 # Get the public ip address of the WAP LoadBalancer
-$PiP = Get-AzureRmPublicIpAddress -ResourceGroupName $RGName | Select-Object ipaddress
+$PiP = Get-AzPublicIpAddress -ResourceGroupName $RGNameWAP | Select-Object ipaddress
 $Pip = $Pip.IPAddress
 
 # Update your hosts file or public DNS with the following settings:

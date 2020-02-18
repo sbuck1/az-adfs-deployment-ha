@@ -111,6 +111,7 @@ DS_WriteLog "I" "PARAMETERS ##########################" $LogFile
 DS_WriteLog "I" "AdminUsername: $($AdminUsername)" $LogFile
 DS_WriteLog "I" "AdminPassword: $($AdminPassword)" $LogFile
 DS_WriteLog "I" "ADFSsvcusername: $($ADFSsvcusername)" $LogFile
+DS_WriteLog "I" "ADFSsvcpassword: $($ADFSsvcpassword)" $LogFile
 DS_WriteLog "I" "PFXFilePath: $($PFXFilePath)" $LogFile
 DS_WriteLog "I" "PFXPassword: $($PFXPassword)" $LogFile
 DS_WriteLog "I" "ADFSUrl: $($ADFSUrl)" $LogFile
