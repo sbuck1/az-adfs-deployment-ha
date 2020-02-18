@@ -202,14 +202,14 @@
                         "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/backendAddressPools/BackendPool-LB-ADFS')]"
                     },
                     "probe": {
-                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                        "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/Healthprobe-LB-ADFS')]"
                     },
                     "protocol": "Tcp",
                     "frontendPort": 443,
                     "backendPort": 443,
                     "idleTimeoutInMinutes": 15
                     },
-                    "Name": "lbrule"
+                    "Name": "Loadbalancing-Rule-ADFS"
                 }
                 ],
                 "probes": [
