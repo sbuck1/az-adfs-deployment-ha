@@ -170,7 +170,6 @@ try{
     catch {
         DS_WriteLog "I" "No Farm exists, try to create it" $LogFile
         $adfsfarm = Install-AdfsFarm `
-            -Credential $DomainCreds `
             -CertificateThumbprint $cert.thumbprint `
             -FederationServiceName $ADFSUrl `
             -FederationServiceDisplayName "ADFS $Index" `

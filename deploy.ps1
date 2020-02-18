@@ -67,73 +67,73 @@ $guid = $guid.Replace("-", "")
 #SET UP AZURE PARAMETERS
 
 $deployparmsADFS=@{
-    "BaseNetRGName"              = $ConfigFileContent.Settings.Azure.BaseNetResourceGroupName
-    "RGNameADFS"                 = $ConfigFileContent.Settings.Azure.ResourceGroupNameADFS
-    "RGLocation"                 = $ConfigFileContent.Settings.Azure.ResourceGroupLocation
-    "VNetName"                   = $ConfigFileContent.Settings.vNet.Name       
-    "VNetAddress"                = $ConfigFileContent.Settings.vNet.Address  
-    "ADFSSubnetName"            = $ConfigFileContent.Settings.VMs.ADFS.Conf.Subnet.Name
-    "ADFSSubnetAddress"         = $ConfigFileContent.Settings.VMs.ADFS.Conf.Subnet.Address
-    "ADFSDNSIP"                 = $ConfigFileContent.Settings.VMs.ADFS.Conf.DNS.IP
-    "ADFSVMSize"                = $ConfigFileContent.Settings.VMs.ADFS.Conf.VMSize
-    "ADFSVMSKU"                 = $ConfigFileContent.Settings.VMs.ADFS.Conf.SKU
-    "ADFS1Name"                  = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
-    "ADFS1IPAddress"             = $ConfigFileContent.Settings.VMs.ADFS.SRV1.IPAddress
-    "ADFS2Name"                  = $ConfigFileContent.Settings.VMs.ADFS.SRV2.Name
-    "ADFS2IPAddress"             = $ConfigFileContent.Settings.VMs.ADFS.SRV2.IPAddress
-    "DomainFQDN"                 = $ConfigFileContent.Settings.Domain.FQDN
-    "DomainNETBIOS"              = $ConfigFileContent.Settings.Domain.NETBIOS
-    "OUPath"                     = $ConfigFileContent.Settings.Domain.OU
-    "LocalAdminUsername"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
-    "LocalAdminPassword"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
-    "DomainJoinUsername"         = $ConfigFileContent.Settings.Credentials.DomainJoin.Username
-    "DomainJoinPassword"         = $ConfigFileContent.Settings.Credentials.DomainJoin.Password
-    "ADFSUrl"                    = $ConfigFileContent.Settings.ADFSConf.URL
-    "CertFolderPath"             = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
-    "ADFSSvcUsername"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
-    "ADFSSvcPassword"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
-    "ADFSInstallUsername"        = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Username
-    "ADFSInstallPassword"        = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Password
-    "PFXFilePath"                = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
-    "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
-    "nesteddomainjoinurl"        = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
-    "adfsDSCConfigurationurl"    = "$($GitAssetLocation)DSC/adfsDSCConfiguration.zip"
-    "DeployADFSFarmTemplateName" = "ADFS_1_Install.ps1"
-    "DeployADFSFarmTemplateUri"  = "$($GitAssetLocation)Scripts/ADFS_1_Install.ps1"
-    "JoinADFSFarmTemplateName"   = "ADFS_2_JoinFarm.ps1"
-    "JoinADFSFarmTemplateUri"    = "$($GitAssetLocation)Scripts/ADFS_2_JoinFarm.ps1"
+    "BaseNetRGName"                = $ConfigFileContent.Settings.Azure.BaseNetResourceGroupName
+    "RGNameADFS"                   = $ConfigFileContent.Settings.Azure.ResourceGroupNameADFS
+    "RGLocation"                   = $ConfigFileContent.Settings.Azure.ResourceGroupLocation
+    "VNetName"                     = $ConfigFileContent.Settings.vNet.Name       
+    "VNetAddress"                  = $ConfigFileContent.Settings.vNet.Address  
+    "ADFSSubnetName"               = $ConfigFileContent.Settings.VMs.ADFS.Conf.Subnet.Name
+    "ADFSSubnetAddress"            = $ConfigFileContent.Settings.VMs.ADFS.Conf.Subnet.Address
+    "ADFSDNSIP"                    = $ConfigFileContent.Settings.VMs.ADFS.Conf.DNS.IP
+    "ADFSVMSize"                   = $ConfigFileContent.Settings.VMs.ADFS.Conf.VMSize
+    "ADFSVMSKU"                    = $ConfigFileContent.Settings.VMs.ADFS.Conf.SKU
+    "ADFS1Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
+    "ADFS1IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV1.IPAddress
+    "ADFS2Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV2.Name
+    "ADFS2IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV2.IPAddress
+    "DomainFQDN"                   = $ConfigFileContent.Settings.Domain.FQDN
+    "DomainNETBIOS"                = $ConfigFileContent.Settings.Domain.NETBIOS
+    "OUPath"                       = $ConfigFileContent.Settings.Domain.OU
+    "LocalAdminUsername"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
+    "LocalAdminPassword"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
+    "DomainJoinUsername"           = $ConfigFileContent.Settings.Credentials.DomainJoin.Username
+    "DomainJoinPassword"           = $ConfigFileContent.Settings.Credentials.DomainJoin.Password
+    "ADFSUrl"                      = $ConfigFileContent.Settings.ADFSConf.URL
+    "CertFolderPath"               = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
+    "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
+    "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
+    "ADFSInstallUsername"          = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Username
+    "ADFSInstallPassword"          = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Password
+    "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
+    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "nesteddomainjoinurl"          = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
+    "adfsDSCConfigurationurl"      = "$($GitAssetLocation)DSC/adfsDSCConfiguration.zip"
+    "DeployADFSFarmTemplateName"   = "ADFS_1_Install.ps1"
+    "DeployADFSFarmTemplateUri"    = "$($GitAssetLocation)Scripts/ADFS_1_Install.ps1"
+    "JoinADFSFarmTemplateName"     = "ADFS_2_JoinFarm.ps1"
+    "JoinADFSFarmTemplateUri"      = "$($GitAssetLocation)Scripts/ADFS_2_JoinFarm.ps1"
     "DscExtensionUpdateTagVersion" = $guid
 }
 $deployparmsWAP=@{
-    "BaseNetRGName"              = $ConfigFileContent.Settings.Azure.BaseNetResourceGroupName
-    "RGNameWAP"                  = $ConfigFileContent.Settings.Azure.ResourceGroupNameWAP
-    "RGLocation"                 = $ConfigFileContent.Settings.Azure.ResourceGroupLocation
-    "VNetName"                   = $ConfigFileContent.Settings.vNet.Name       
-    "VNetAddress"                = $ConfigFileContent.Settings.vNet.Address  
-    "WAPSubnetName"             = $ConfigFileContent.Settings.VMs.WAP.Conf.Subnet.Name
-    "WAPSubnetAddress"          = $ConfigFileContent.Settings.VMs.WAP.Conf.Subnet.Address
-    "WAPVMSize"                 = $ConfigFileContent.Settings.VMs.WAP.Conf.VMSize
-    "WAPVMSKU"                  = $ConfigFileContent.Settings.VMs.WAP.Conf.SKU
-    "WAP1Name"                   = $ConfigFileContent.Settings.VMs.WAP.SRV1.Name
-    "WAP1IPAddress"              = $ConfigFileContent.Settings.VMs.WAP.SRV1.IPAddress
-    "WAP2Name"                   = $ConfigFileContent.Settings.VMs.WAP.SRV2.Name
-    "WAP2IPAddress"              = $ConfigFileContent.Settings.VMs.WAP.SRV2.IPAddress
-    "DomainFQDN"                 = $ConfigFileContent.Settings.Domain.FQDN
-    "DomainNETBIOS"              = $ConfigFileContent.Settings.Domain.NETBIOS
-    "OUPath"                     = $ConfigFileContent.Settings.Domain.OU
-    "LocalAdminUsername"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
-    "LocalAdminPassword"         = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
-    "ADFSUrl"                    = $ConfigFileContent.Settings.ADFSConf.URL
-    "CertFolderPath"             = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
-    "ADFSSvcUsername"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
-    "ADFSSvcPassword"            = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
-    "PFXFilePath"                = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
-    "PFXPassword"                = $ConfigFileContent.Settings.ADFSConf.PXFPassword
-    "wapDSCConfigurationurl"     = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
-    "DeployWAPFarmTemplateName" = "WAP_1_Install.ps1"
-    "DeployWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/WAP_1_Install.ps1"
-    "JoinWAPFarmTemplateName" = "WAP_2_JoinFarm.ps1"
-    "JoinWAPFarmTemplateUri"  = "$($GitAssetLocation)Scripts/WAP_2_JoinFarm.ps1"
+    "BaseNetRGName"                = $ConfigFileContent.Settings.Azure.BaseNetResourceGroupName
+    "RGNameWAP"                    = $ConfigFileContent.Settings.Azure.ResourceGroupNameWAP
+    "RGLocation"                   = $ConfigFileContent.Settings.Azure.ResourceGroupLocation
+    "VNetName"                     = $ConfigFileContent.Settings.vNet.Name       
+    "VNetAddress"                  = $ConfigFileContent.Settings.vNet.Address  
+    "WAPSubnetName"                = $ConfigFileContent.Settings.VMs.WAP.Conf.Subnet.Name
+    "WAPSubnetAddress"             = $ConfigFileContent.Settings.VMs.WAP.Conf.Subnet.Address
+    "WAPVMSize"                    = $ConfigFileContent.Settings.VMs.WAP.Conf.VMSize
+    "WAPVMSKU"                     = $ConfigFileContent.Settings.VMs.WAP.Conf.SKU
+    "WAP1Name"                     = $ConfigFileContent.Settings.VMs.WAP.SRV1.Name
+    "WAP1IPAddress"                = $ConfigFileContent.Settings.VMs.WAP.SRV1.IPAddress
+    "WAP2Name"                     = $ConfigFileContent.Settings.VMs.WAP.SRV2.Name
+    "WAP2IPAddress"                = $ConfigFileContent.Settings.VMs.WAP.SRV2.IPAddress
+    "DomainFQDN"                   = $ConfigFileContent.Settings.Domain.FQDN
+    "DomainNETBIOS"                = $ConfigFileContent.Settings.Domain.NETBIOS
+    "OUPath"                       = $ConfigFileContent.Settings.Domain.OU
+    "LocalAdminUsername"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
+    "LocalAdminPassword"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
+    "ADFSUrl"                      = $ConfigFileContent.Settings.ADFSConf.URL
+    "CertFolderPath"               = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
+    "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
+    "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
+    "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
+    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
+    "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
+    "DeployWAPFarmTemplateUri"     = "$($GitAssetLocation)Scripts/WAP_1_Install.ps1"
+    "JoinWAPFarmTemplateName"      = "WAP_2_JoinFarm.ps1"
+    "JoinWAPFarmTemplateUri"       = "$($GitAssetLocation)Scripts/WAP_2_JoinFarm.ps1"
     "DscExtensionUpdateTagVersion" = $guid
 }
 
@@ -143,21 +143,20 @@ foreach($param in $deployparms.GetEnumerator()){new-variable -name $param.name -
 #END SET UP AZURE PARAMETERS
 
 
+Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGADFSNotPresent -ErrorAction SilentlyContinue
+Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGWAPNotPresent -ErrorAction SilentlyContinue
+
 try {
-    Get-AzResourceGroup -Name $RGNameADFS -ErrorAction Stop
-    Write-Host "Resource group $RGNameADFS exists, updating deployment"
-}
-catch {
-    New-AzResourceGroup -Name $RGNameADFS -Location $RGLocation
-    Write-Host "Created new resource group $RGNameADFS."
-}
-try {
-    Get-AzResourceGroup -Name $RGNameWAP -ErrorAction Stop
-    Write-Host "Resource group $RGNameWAP exists, updating deployment"
-}
-catch {
-    New-AzResourceGroup -Name $RGNameWAP -Location $RGLocation
-    Write-Host "Created new resource group $RGNameWAP."
+    if ($RGADFSNotPresent)
+    {
+        New-AzResourceGroup -Name $RGNameADFS -Location $RGLocation
+    }
+    if ($RGWAPNotPresent)
+    {
+        New-AzResourceGroup -Name $RGNameWAP -Location $RGLocation
+    }
+}catch{
+    
 }
 
 $version ++
