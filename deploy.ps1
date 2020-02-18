@@ -78,6 +78,7 @@ $deployparmsADFS=@{
     "ADFSVMSize"                   = $ConfigFileContent.Settings.VMs.ADFS.Conf.VMSize
     "ADFSVMSKU"                    = $ConfigFileContent.Settings.VMs.ADFS.Conf.SKU
     "ADFS1Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
+    "PrimaryADFSServer"            = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
     "ADFS1IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV1.IPAddress
     "ADFS2Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV2.Name
     "ADFS2IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV2.IPAddress
@@ -130,7 +131,6 @@ $deployparmsWAP=@{
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
-    "PrimaryADFSServer"            = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
     "LoadBalancerAddress"          = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
     "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
@@ -168,7 +168,7 @@ $version ++
 
 try{
     
-    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
+    New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
     New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{

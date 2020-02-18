@@ -145,8 +145,8 @@ try{
 
     $Index = $ComputerName.Substring($ComputerName.Length-1,1)
     
-    Add-AdfsFarmNode 
-        -Credential $DomainCreds
+    $adfsfarm = Add-AdfsFarmNode `
+        -Credential $DomainCreds `
         -PrimaryComputerName $PrimaryADFSServer `
         -PrimaryComputerPort 443 `
         -ServiceAccountCredential $ADFSSvcCreds `
