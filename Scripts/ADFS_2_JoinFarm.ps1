@@ -173,7 +173,8 @@ try{
         -PrimaryComputerName $PrimaryADFSServer `
         -PrimaryComputerPort 80 `
         -ServiceAccountCredential $ADFSSvcCreds `
-        -CertificateThumbprint $cert.Thumbprint
+        -CertificateThumbprint $cert.Thumbprint `
+        -Erroraction Stop
     
 }catch{
     DS_WriteLog "E" "Unable to Join ADFS Farm (error: $($Error[0]))" $LogFile
