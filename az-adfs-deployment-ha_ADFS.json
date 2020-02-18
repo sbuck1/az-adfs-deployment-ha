@@ -90,6 +90,9 @@
         "PFXPassword": {
             "type": "securestring"
         },
+        "PrimaryADFSServer": {
+            "type": "securestring"
+        },
         "OUPath": {
             "type": "securestring"
         },
@@ -594,7 +597,7 @@
                 ]
               },
               "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinADFSFarmTemplateName'), ' -AdminUsername ', parameters('ADFSInstallUsername'), ' -AdminPassword ', parameters('ADFSInstallPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinADFSFarmTemplateName'), ' -AdminUsername ', parameters('ADFSInstallUsername'), ' -AdminPassword ', parameters('ADFSInstallPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'), ' -PrimaryADFSServer ', parameters('PrimaryADFSServer'))]"
               }
             }
         }  

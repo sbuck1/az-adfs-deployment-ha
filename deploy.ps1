@@ -130,6 +130,7 @@ $deployparmsWAP=@{
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "PrimaryADFSServer"            = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
     "LoadBalancerAddress"          = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/wapDSCConfiguration.zip"
     "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
@@ -167,8 +168,8 @@ $version ++
 
 try{
     
-    New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
-    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
+    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
+    New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{
     $error[0].Exception

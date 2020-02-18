@@ -17,6 +17,9 @@
 	[Parameter(Mandatory)]
     [string]$PFXPassword,
 
+    [Parameter(Mandatory)]
+    [string]$PrimaryADFSServer,
+
 	[Parameter(Mandatory)]
 	[string]$ADFSUrl
 )
@@ -142,6 +145,12 @@ try{
 
     $Index = $ComputerName.Substring($ComputerName.Length-1,1)
     
+    Add-AdfsFarmNode 
+        -Credential $DomainCreds
+        -PrimaryComputerName $PrimaryADFSServer `
+        -PrimaryComputerPort 443 `
+        -ServiceAccountCredential $ADFSsvcpassword `
+        -CertificateThumbprint $cert.Thumbprint
     
 }catch{
     DS_WriteLog "E" "Unable to Join ADFS Farm (error: $($Error[0]))" $LogFile
