@@ -519,7 +519,7 @@
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'InstallWAP')]"
             ],
             "tags": {
-              "displayName": "DeployWAPFarm"
+              "displayName": "JoinWAPFarm"
             },
             "properties": {
               "publisher": "Microsoft.Compute",
@@ -529,7 +529,7 @@
               "autoUpgradeMinorVersion": true,
               "settings": {
                 "fileUris": [
-                  "[parameters('DeployWAPFarmTemplateUri')]"
+                  "[parameters('JoinWAPFarmTemplateUri')]"
                 ]
               },
               "protectedSettings": {
