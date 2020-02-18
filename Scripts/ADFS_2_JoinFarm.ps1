@@ -149,7 +149,7 @@ try{
         -Credential $DomainCreds
         -PrimaryComputerName $PrimaryADFSServer `
         -PrimaryComputerPort 443 `
-        -ServiceAccountCredential $ADFSsvcpassword `
+        -ServiceAccountCredential $ADFSSvcCreds `
         -CertificateThumbprint $cert.Thumbprint
     
 }catch{
