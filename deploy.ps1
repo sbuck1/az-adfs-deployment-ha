@@ -144,8 +144,8 @@ foreach($param in $deployparms.GetEnumerator()){new-variable -name $param.name -
 
 #END SET UP AZURE PARAMETERS
 
-Remove-Variable $RGADFSNotPresent -Force -ErrorAction SilentlyContinue
-Remove-Variable $RGWAPNotPresent -Force -ErrorAction SilentlyContinue
+if($RGADFSNotPresent){Remove-Variable $RGADFSNotPresent -Force -ErrorAction SilentlyContinue}
+if($RGWAPNotPresent){Remove-Variable $RGWAPNotPresent -Force -ErrorAction SilentlyContinue}
 
 Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGADFSNotPresent -ErrorAction SilentlyContinue
 Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGWAPNotPresent -ErrorAction SilentlyContinue

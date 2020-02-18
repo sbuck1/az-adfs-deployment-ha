@@ -590,7 +590,7 @@
               "autoUpgradeMinorVersion": true,
               "settings": {
                 "fileUris": [
-                  "[parameters('DeployADFSFarmTemplateUri')]"
+                  "[parameters('JoinADFSFarmTemplateUri')]"
                 ]
               },
               "protectedSettings": {
