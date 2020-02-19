@@ -471,7 +471,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('ADFS1VMName'),'/ADFS_1_InstallWindowsFeature')]",
+            "name": "[concat(variables('ADFS1VMName'),'/ADFS_1_InstallWindowsFeature1')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
@@ -505,7 +505,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('ADFS2VMName'),'/ADFS_1_InstallWindowsFeature')]",
+            "name": "[concat(variables('ADFS2VMName'),'/ADFS_1_InstallWindowsFeature2')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
@@ -544,7 +544,7 @@
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS1VMName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_1_InstallWindowsFeature')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_1_InstallWindowsFeature1')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
@@ -587,7 +587,7 @@
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'ADFS_2_CreateADFSFarm')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_2_CreateADFSFarm')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
@@ -597,7 +597,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
-                    "ConfigurationFunction": "ADFS_2_CreateADFSFarm.ps1\\Main",
+                    "ConfigurationFunction": "ADFS_3_JoinADFSFarm.ps1\\Main",
                     "Properties": {
                         "AdminCreds": {
                             "UserName": "[parameters('ADFSInstallUsername')]",

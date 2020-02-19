@@ -18,7 +18,7 @@ Import-Module Az -ErrorAction SilentlyContinue
     $ConfigFileFolder        = "$scriptroot"
     $ConfigFileName          = "$DeploymentName.xml"
     $ConfigFileFullPath      = "$ConfigFileFolder\$ConfigFileName"
-    $LogFolder               = "$scriptroot\_Logs\"
+    $LogFolder               = "$scriptroot\_Logs"
     $LogFileName             = "$date.log"
     $LogFileFullPath         = "$LogFolder\$LogFileName"
     $templateFileADFS        = "$scriptroot\$($DeploymentName)_ADFS.json"
@@ -33,12 +33,13 @@ Import-Module Az -ErrorAction SilentlyContinue
 
 #Import Config File
 
+Start-Transcript -Path $LogFileFullPath -Force
 
 try {
     [xml]$ConfigFileContent = (Get-Content $ConfigFileFullPath)
 
 } catch {
-
+    $error[0].Exception
     Exit 1
 }
 
@@ -98,7 +99,7 @@ $deployparmsADFS=@{
     "ADFSInstallPassword"          = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXThumbprint"                = $ConfigFileContent.Settings.ADFSConf.PFXThumbprint
-    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PFXPassword
     "nesteddomainjoinurl"          = "$($GitAssetLocation)nestedtemplates/az-domain-join.json"
     "adfsDSCConfigurationurl"      = "$($GitAssetLocation)DSC/ADFS.zip"
     "DscExtensionUpdateTagVersion" = $guid
@@ -127,7 +128,8 @@ $deployparmsWAP=@{
     "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
-    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PXFPassword
+    "PFXThumbprint"                = $ConfigFileContent.Settings.ADFSConf.PFXThumbprint
+    "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PFXPassword
     "ADFSLoadBalancerAddress"      = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/WAP_1_InstallWindowsFeature.zip"
     "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
@@ -138,7 +140,8 @@ $deployparmsWAP=@{
 }
 
 #Create Variables from the Hashtable
-foreach($param in $deployparms.GetEnumerator()){new-variable -name $param.name -value $param.value -ErrorAction SilentlyContinue}
+foreach($param in $deployparmsADFS.GetEnumerator()){new-variable -name $param.name -value $param.value -ErrorAction SilentlyContinue}
+foreach($param in $deployparmsWAP.GetEnumerator()){new-variable -name $param.name -value $param.value -ErrorAction SilentlyContinue}
 
 #END SET UP AZURE PARAMETERS
 
@@ -166,7 +169,7 @@ $version ++
 try{
     
     New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
-    New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
+    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{
     $error[0].Exception
@@ -188,3 +191,5 @@ $Pip = $Pip.IPAddress
 write-host "Update your hosts file or public DNS with the following settings:"
 write-host "DNS Name  :   $ADFSUrl"
 write-host "IP        :   $Pip" 
+
+Stop-Transcript
