@@ -451,7 +451,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
-                    "ConfigurationFunction": "wapDSCConfiguration.ps1\\Main",
+                    "ConfigurationFunction": "WAP_1_InstallWindowsFeature.ps1\\Main",
                     "Properties": {
                         
                     }
@@ -474,7 +474,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
-                    "ConfigurationFunction": "wapDSCConfiguration.ps1\\Main",
+                    "ConfigurationFunction": "WAP_1_InstallWindowsFeature.ps1\\Main",
                     "Properties": {
                         
                     }

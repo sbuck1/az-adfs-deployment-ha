@@ -90,6 +90,9 @@
         "PFXPassword": {
             "type": "securestring"
         },
+        "PFXThumbprint": {
+            "type": "securestring"
+        },
         "PrimaryADFSServer": {
             "type": "securestring"
         },
@@ -107,18 +110,6 @@
               }
         },
         "adfsDSCConfigurationurl": {
-            "type": "string"
-        },
-        "DeployADFSFarmTemplateUri": {
-            "type": "string"
-        },
-        "DeployADFSFarmTemplateName": {
-            "type": "string"
-        },
-        "JoinADFSFarmTemplateName": {
-            "type": "string"
-        },
-        "JoinADFSFarmTemplateUri": {
             "type": "string"
         },
         "DscExtensionUpdateTagVersion": {
@@ -480,7 +471,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('ADFS1VMName'),'/ConfigureADFS')]",
+            "name": "[concat(variables('ADFS1VMName'),'/ADFS_1_InstallWindowsFeature')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
@@ -495,7 +486,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
-                    "ConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
+                    "ConfigurationFunction": "ADFS_1_InstallWindowsFeature.ps1\\Main",
                     "Properties": {
                         "AdminCreds": {
                             "UserName": "[parameters('DomainJoinUsername')]",
@@ -514,7 +505,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('ADFS2VMName'),'/ConfigureADFS')]",
+            "name": "[concat(variables('ADFS2VMName'),'/ADFS_1_InstallWindowsFeature')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
@@ -529,7 +520,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
-                    "ConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
+                    "ConfigurationFunction": "ADFS_1_InstallWindowsFeature.ps1\\Main",
                     "Properties": {
                         "AdminCreds": {
                             "UserName": "[parameters('DomainJoinUsername')]",
@@ -547,59 +538,91 @@
             
         },
         {
-            "name": "[concat(variables('ADFS1VMName'), '/InstallADFS')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('RGLocation')]",
+            "name": "[concat(variables('ADFS1VMName'),'/ADFS_2_CreateADFSFarm')]",
             "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ConfigureADFS')]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS1VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_1_InstallWindowsFeature')]"
             ],
-            "tags": {
-              "displayName": "DeployADFSFarm"
-            },
             "properties": {
-              "publisher": "Microsoft.Compute",
-              "type": "CustomScriptExtension",
-              "typeHandlerVersion": "1.9",
-              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "[parameters('DeployADFSFarmTemplateUri')]"
-                ]
-              },
-              "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployADFSFarmTemplateName'), ' -AdminUsername ', parameters('ADFSInstallUsername'), ' -AdminPassword ', parameters('ADFSInstallPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
-              }
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
+                    "ConfigurationFunction": "ADFS_2_CreateADFSFarm.ps1\\Main",
+                    "Properties": {
+                        "AdminCreds": {
+                            "UserName": "[parameters('ADFSInstallUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        },
+                        "ADFSSvcCreds": {
+                            "UserName": "[parameters('ADFSSvcUsername')]",
+                            "Password": "PrivateSettingsRef:ADFSPassword"
+                        },
+                        "PFXFilePath": "[parameters('PFXFilePath')]",
+                        "PFXThumbprint": "[parameters('PFXThumbprint')]",
+                        "ADFSUrl": "[parameters('ADFSUrl')]"
+                        
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('ADFSInstallPassword')]",
+                        "ADFSPassword": "[parameters('ADFSSvcPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
             }
+            
         },
         {
-            "name": "[concat(variables('ADFS2VMName'), '/JoinADFS')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('RGLocation')]",
+            "name": "[concat(variables('ADFS2VMName'),'/ADFS_3_JoinADFSFarm')]",
             "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'ConfigureADFS')]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'InstallADFS')]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'ADFS_2_CreateADFSFarm')]"
             ],
-            "tags": {
-              "displayName": "DeployADFSFarm"
-            },
             "properties": {
-              "publisher": "Microsoft.Compute",
-              "type": "CustomScriptExtension",
-              "typeHandlerVersion": "1.9",
-              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "[parameters('JoinADFSFarmTemplateUri')]"
-                ]
-              },
-              "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinADFSFarmTemplateName'), ' -AdminUsername ', parameters('ADFSInstallUsername'), ' -AdminPassword ', parameters('ADFSInstallPassword'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'), ' -PrimaryADFSServer ', parameters('PrimaryADFSServer'))]"
-              }
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
+                    "ConfigurationFunction": "ADFS_2_CreateADFSFarm.ps1\\Main",
+                    "Properties": {
+                        "AdminCreds": {
+                            "UserName": "[parameters('ADFSInstallUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        },
+                        "ADFSSvcCreds": {
+                            "UserName": "[parameters('ADFSSvcUsername')]",
+                            "Password": "PrivateSettingsRef:ADFSPassword"
+                        },
+                        "PFXFilePath": "[parameters('PFXFilePath')]",
+                        "PFXThumbprint": "[parameters('PFXThumbprint')]",
+                        "ADFSUrl": "[parameters('ADFSUrl')]",
+                        "PrimaryADFSServer": "[parameters('PrimaryADFSServer')]"
+                        
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('ADFSInstallPassword')]",
+                        "ADFSPassword": "[parameters('ADFSSvcPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
             }
-        }  
+            
+        }
     ]
 }
