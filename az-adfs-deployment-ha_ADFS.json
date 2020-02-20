@@ -495,7 +495,7 @@
                             "Password": "PrivateSettingsRef:ADFSPassword"
                         },
                         "PFXPassword": {
-                            "UserName": "",
+                            "UserName": ".",
                             "Password": "PrivateSettingsRef:ProtectedPFXPassword"
                         },
                         "PFXFilePath": "[parameters('PFXFilePath')]",
