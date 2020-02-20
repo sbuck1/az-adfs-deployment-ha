@@ -79,7 +79,6 @@ $deployparmsADFS=@{
     "ADFSVMSize"                   = $ConfigFileContent.Settings.VMs.ADFS.Conf.VMSize
     "ADFSVMSKU"                    = $ConfigFileContent.Settings.VMs.ADFS.Conf.SKU
     "ADFS1Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
-    "PrimaryADFSServer"            = $ConfigFileContent.Settings.VMs.ADFS.SRV1.Name
     "ADFS1IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV1.IPAddress
     "ADFS2Name"                    = $ConfigFileContent.Settings.VMs.ADFS.SRV2.Name
     "ADFS2IPAddress"               = $ConfigFileContent.Settings.VMs.ADFS.SRV2.IPAddress
