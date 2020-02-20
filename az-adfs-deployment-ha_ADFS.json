@@ -536,7 +536,7 @@
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
                     "ConfigurationFunction": "ADFS_Install.ps1\\Main",
                     "Properties": {
-                        "ADFSRole" : "Primary",
+                        "ADFSRole" : "Secondary",
                         "AdminCreds": {
                             "UserName": "[parameters('ADFSInstallUsername')]",
                             "Password": "PrivateSettingsRef:AdminPassword"

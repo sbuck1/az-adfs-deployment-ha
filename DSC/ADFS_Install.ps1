@@ -50,6 +50,8 @@ $MyData =
     );
 }
     
+write-output $MyData
+$MyData | Out-File C:\WindowsAzure\test.txt
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate
 
