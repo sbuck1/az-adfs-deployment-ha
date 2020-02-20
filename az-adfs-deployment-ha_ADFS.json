@@ -494,12 +494,15 @@
                             "UserName": "[parameters('ADFSSvcUsername')]",
                             "Password": "PrivateSettingsRef:ADFSPassword"
                         },
+                        "PFXPassword": {
+                            "UserName": "",
+                            "Password": "PrivateSettingsRef:ProtectedPFXPassword"
+                        },
                         "PFXFilePath": "[parameters('PFXFilePath')]",
                         "PFXThumbprint": "[parameters('PFXThumbprint')]",
                         "ADFSUrl": "[parameters('ADFSUrl')]",
                         "PrimaryADFSServer": "[parameters('ADFS1Name')]",
-                        "SecondaryADFSServer": "[parameters('ADFS2Name')]",
-                        "PFXPassword": "PrivateSettingsRef:ProtectedPFXPassword"
+                        "SecondaryADFSServer": "[parameters('ADFS2Name')]"
                         
                     }
                 },

@@ -18,7 +18,7 @@ Configuration Main
         [string]$PFXThumbprint,
         
         [Parameter(Mandatory)]
-        [securestring]$PFXPassword,
+        [System.Management.Automation.PSCredential]$PFXPassword,
 
         [Parameter(Mandatory)]
         [string]$ADFSUrl,
