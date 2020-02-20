@@ -468,7 +468,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('ADFS1VMName'),'/ADFS_Install_Primary')]",
+            "name": "[concat(variables('ADFS1VMName'),'/ADFS_Install')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
@@ -512,8 +512,55 @@
                 }
             }
             
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('ADFS2VMName'),'/ADFS_Install')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'joindomain')]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_Install')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
+                    "ConfigurationFunction": "ADFS_Install.ps1\\Main",
+                    "Properties": {
+                        "ADFSRole" : "Primary",
+                        "AdminCreds": {
+                            "UserName": "[parameters('ADFSInstallUsername')]",
+                            "Password": "PrivateSettingsRef:AdminPassword"
+                        },
+                        "ADFSSvcCreds": {
+                            "UserName": "[parameters('ADFSSvcUsername')]",
+                            "Password": "PrivateSettingsRef:ADFSPassword"
+                        },
+                        "PFXFilePath": "[parameters('PFXFilePath')]",
+                        "PFXThumbprint": "[parameters('PFXThumbprint')]",
+                        "ADFSUrl": "[parameters('ADFSUrl')]",
+                        "PrimaryADFSServer": "[parameters('ADFS1Name')]",
+                        "SecondaryADFSServer": "[parameters('ADFS2Name')]",
+                        "PFXPassword": "PrivateSettingsRef:ProtectedPFXPassword"
+                        
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "AdminPassword": "[parameters('ADFSInstallPassword')]",
+                        "ADFSPassword": "[parameters('ADFSSvcPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
+            }
+            
         }
        
-        
     ]
 }
