@@ -485,7 +485,6 @@
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
                     "ConfigurationFunction": "ADFS_1_CreateADFSFarm.ps1\\Main",
                     "Properties": {
-                        "ADFSRole" : "Primary",
                         "AdminCreds": {
                             "UserName": "[parameters('ADFSInstallUsername')]",
                             "Password": "PrivateSettingsRef:AdminPassword"
@@ -522,7 +521,7 @@
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('ADFS2VMName'))]",
                 "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS2VMName'), 'joindomain')]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'ADFS_Install')]"
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('ADFS1VMName'), 'CreateADFSFarm')]"
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
@@ -534,7 +533,6 @@
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
                     "ConfigurationFunction": "ADFS_2_JoinADFSFarm.ps1\\Main",
                     "Properties": {
-                        "ADFSRole" : "Secondary",
                         "AdminCreds": {
                             "UserName": "[parameters('ADFSInstallUsername')]",
                             "Password": "PrivateSettingsRef:AdminPassword"
