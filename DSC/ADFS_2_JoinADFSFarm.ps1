@@ -63,21 +63,21 @@ Configuration Main
             SetScript = {
                 
                 Add-AdfsFarmNode `
-                    -Credential $DomainCreds `
-                    -PrimaryComputerName $PrimaryADFSServer `
+                    -Credential $Using:AdminCreds `
+                    -PrimaryComputerName $Using:PrimaryADFSServer `
                     -PrimaryComputerPort 80 `
-                    -ServiceAccountCredential $ADFSSvcCreds `
-                    -CertificateThumbprint $PFXThumbprint `
+                    -ServiceAccountCredential $Using:ADFSSvcCreds `
+                    -CertificateThumbprint $Using:PFXThumbprint `
                     -Erroraction Stop
             }
             TestScript = {
-                $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
-                if($ADFSFarm){return $True}
+                $AdfsService = Get-Service adfssrv
+                if($AdfsService.Status -eq "Running"){return $True}
                 else{return $False}
             }
             GetScript = {
-                $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
-                return @{Result = $ADFSFarm}
+                $AdfsService = Get-Service adfssrv
+                return @{Result = $AdfsService}
             }
             DependsOn = '[xPfxImport]ADFSCert'
         }
