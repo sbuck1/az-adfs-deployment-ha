@@ -81,9 +81,6 @@
         "ADFSUrl": {
             "type": "string"
         },
-        "CertFolderPath": {
-            "type": "string"
-        },
         "PFXFilePath": {
             "type": "string"
         },

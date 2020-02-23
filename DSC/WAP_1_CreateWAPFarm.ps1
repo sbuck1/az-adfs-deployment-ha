@@ -3,9 +3,6 @@ Configuration Main
     Param 
     ( 
         [Parameter(Mandatory)]
-        [System.Management.Automation.PSCredential]$AdminCreds,
-
-        [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$ADFSSvcCreds,
 
         [Parameter(Mandatory)]
@@ -25,9 +22,6 @@ Configuration Main
 
         [Parameter(Mandatory)]
         [string]$ADFSUrl,
-
-        [Parameter(Mandatory)]
-        [string]$PrimaryADFSServer,
 
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30

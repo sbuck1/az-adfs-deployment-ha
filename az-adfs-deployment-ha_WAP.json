@@ -63,14 +63,14 @@
         "ADFSUrl": {
             "type": "string"
         },
-        "CertFolderPath": {
-            "type": "string"
-        },
         "PFXFilePath": {
             "type": "string"
         },
         "PFXPassword": {
             "type": "securestring"
+        },
+        "PFXThumbprint": {
+            "type": "string"
         },
         "RootCAFilePath": {
             "type": "string"
@@ -85,18 +85,6 @@
             "type": "securestring"
         },
         "wapDSCConfigurationurl": {
-            "type": "string"
-        },
-        "DeployWAPFarmTemplateUri": {
-            "type": "string"
-        },
-        "DeployWAPFarmTemplateName": {
-            "type": "string"
-        },
-        "JoinWAPFarmTemplateUri": {
-            "type": "string"
-        },
-        "JoinWAPFarmTemplateName": {
             "type": "string"
         },
         "DscExtensionUpdateTagVersion": {
@@ -440,6 +428,93 @@
                 }
             ]
             }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('WAP1VMName'),'/CreateWAPFarm')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP1VMName'))]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
+                    "ConfigurationFunction": "WAP_1_CreateWAPFarm.ps1\\Main",
+                    "Properties": {
+                        "ADFSSvcCreds": {
+                            "UserName": "[parameters('ADFSSvcUsername')]",
+                            "Password": "PrivateSettingsRef:ADFSPassword"
+                        },
+                        "PFXPassword": {
+                            "UserName": "username",
+                            "Password": "PrivateSettingsRef:ProtectedPFXPassword"
+                        },
+                        "PFXFilePath": "[parameters('PFXFilePath')]",
+                        "PFXThumbprint": "[parameters('PFXThumbprint')]",
+                        "ADFSUrl": "[parameters('ADFSUrl')]",
+                        "RootCAFilePath": "[parameters('RootCAFilePath')]",
+                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]"
+                        
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "ADFSPassword": "[parameters('ADFSSvcPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
+            }
+            
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('WAP2VMName'),'/JoinWAPFarm')]",
+            "apiVersion": "2018-10-01",
+            "location": "[parameters('RGLocation')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP2VMName'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'CreateWAPFarm')]"
+            ],
+            "properties": {
+                "publisher": "Microsoft.Powershell",
+                "type": "DSC",
+                "typeHandlerVersion": "2.19",
+                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
+                    "ConfigurationFunction": "WAP_2_JoinWAPFarm.ps1\\Main",
+                    "Properties": {
+                        "ADFSSvcCreds": {
+                            "UserName": "[parameters('ADFSSvcUsername')]",
+                            "Password": "PrivateSettingsRef:ADFSPassword"
+                        },
+                        "PFXPassword": {
+                            "UserName": "username",
+                            "Password": "PrivateSettingsRef:ProtectedPFXPassword"
+                        },
+                        "PFXFilePath": "[parameters('PFXFilePath')]",
+                        "PFXThumbprint": "[parameters('PFXThumbprint')]",
+                        "ADFSUrl": "[parameters('ADFSUrl')]",
+                        "RootCAFilePath": "[parameters('RootCAFilePath')]",
+                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]"
+                        
+                    }
+                },
+                "protectedSettings": {
+                    "Items": {
+                        "ADFSPassword": "[parameters('ADFSSvcPassword')]",
+                        "ProtectedPFXPassword": "[parameters('PFXPassword')]"
+                    }
+                }
+            }
+            
         }
         
     ]
