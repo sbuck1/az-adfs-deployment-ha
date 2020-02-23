@@ -56,8 +56,8 @@ Configuration Main
         Script CreateADFSFarm
         {
             SetScript = {
+                Start-Transcript -Path C:\WindowsAzure\SetScript.txt
                 Import-Module ADFS
-                "SetScript" | Out-File C:\windowsazure\Setscript.txt
                 Install-AdfsFarm `
                     -Credential $DomainCreds `
                     -CertificateThumbprint $PFXThumbprint `
@@ -65,19 +65,22 @@ Configuration Main
                     -FederationServiceDisplayName "ADFS" `
                     -ServiceAccountCredential $ADFSSvcCreds `
                     -OverwriteConfiguration
+                Stop-Transcript
             }
             TestScript = {
+                Start-Transcript -Path C:\WindowsAzure\TestScript.txt
                 Import-Module ADFS
-                "TESTScript" | Out-File C:\windowsazure\testscript.txt
-                $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
-                if($ADFSFarm){return $True}
+                $AdfsService = Get-Service adfssrv
+                if($AdfsService.Status -eq "Running"){return $True}
                 else{return $False}
+                Stop-Transcript
             }
             GetScript = {
+                Start-Transcript -Path C:\WindowsAzure\GetScript.txt
                 Import-Module ADFS
-                "GetScript" | Out-File C:\windowsazure\Getscript.txt
                 $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
                 return @{Result = $ADFSFarm}
+                Stop-Transcript
             }
             DependsOn = '[xPfxImport]ADFSCert'
         }
