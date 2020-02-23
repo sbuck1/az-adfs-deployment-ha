@@ -482,10 +482,6 @@
                     "ModulesUrl": "[parameters('adfsDSCConfigurationurl')]",
                     "ConfigurationFunction": "ADFS_1_CreateADFSFarm.ps1\\Main",
                     "Properties": {
-                        "AdminCreds": {
-                            "UserName": "[parameters('ADFSInstallUsername')]",
-                            "Password": "PrivateSettingsRef:AdminPassword"
-                        },
                         "ADFSSvcCreds": {
                             "UserName": "[parameters('ADFSSvcUsername')]",
                             "Password": "PrivateSettingsRef:ADFSPassword"

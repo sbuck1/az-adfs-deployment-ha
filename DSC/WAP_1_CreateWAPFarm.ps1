@@ -4,7 +4,7 @@ Configuration Main
     ( 
         [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$ADFSSvcCreds,
-
+        
         [Parameter(Mandatory)]
         [string]$PFXFilePath,
 
@@ -69,7 +69,7 @@ Configuration Main
         File ADFSPFXFile
         {
             DestinationPath = "C:\Install\certificate.pfx"
-            Credential = $AdminCreds
+            Credential = $ADFSSvcCreds
             Force = $True
             SourcePath = $PFXFilePath
             Type = "File"
@@ -78,7 +78,7 @@ Configuration Main
         File ADFSRootCAFile
         {
             DestinationPath = "C:\Install\Root.cer"
-            Credential = $AdminCreds
+            Credential = $ADFSSvcCreds
             Force = $True
             SourcePath = $RootCAFilePath
             Type = "File"
@@ -104,15 +104,21 @@ Configuration Main
         Script CreateWAPFarm
         {
             SetScript = {
-                
+                Install-WebApplicationProxy `
+			        -FederationServiceTrustCredential $Using:ADFSSvcCreds `
+                    -CertificateThumbprint $Using:PFXThumbprint`
+                    -FederationServiceName $Using:ADFSUrl -ErrorAction Stop
                 
             }
             TestScript = {
-               
+                $AdfsService = Get-Service adfssrv
+                if($AdfsService.Status -eq "Running"){return $True}
+                else{return $False}
                
             }
             GetScript = {
-                
+                $AdfsService = Get-Service adfssrv
+                return @{Result = $AdfsService}
             }
             DependsOn = @("[xPfxImport]ADFSCert",
                           "[xCertificateImport]RootCACert")
