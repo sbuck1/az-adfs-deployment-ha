@@ -56,7 +56,8 @@ Configuration Main
         Script CreateADFSFarm
         {
             SetScript = {
-                
+                Import-Module ADFS
+                "SetScript" | Out-File C:\windowsazure\Setscript.txt
                 Install-AdfsFarm `
                     -Credential $DomainCreds `
                     -CertificateThumbprint $PFXThumbprint `
@@ -66,11 +67,15 @@ Configuration Main
                     -OverwriteConfiguration
             }
             TestScript = {
+                Import-Module ADFS
+                "TESTScript" | Out-File C:\windowsazure\testscript.txt
                 $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
                 if($ADFSFarm){return $True}
                 else{return $False}
             }
             GetScript = {
+                Import-Module ADFS
+                "GetScript" | Out-File C:\windowsazure\Getscript.txt
                 $ADFSFarm = Get-ADFSFarmInformation -ErrorAction SilentlyContinue
                 return @{Result = $ADFSFarm}
             }
