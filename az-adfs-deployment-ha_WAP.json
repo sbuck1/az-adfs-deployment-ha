@@ -72,6 +72,12 @@
         "PFXPassword": {
             "type": "securestring"
         },
+        "RootCAFilePath": {
+            "type": "string"
+        },
+        "RootCAThumbprint": {
+            "type": "securestring"
+        },
         "ADFSLoadBalancerAddress": {
             "type": "securestring"
         },
@@ -433,108 +439,6 @@
                     }
                 }
             ]
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('WAP1VMName'),'/ConfigureWAP')]",
-            "apiVersion": "2018-10-01",
-            "location": "[parameters('RGLocation')]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP1VMName'))]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
-                    "ConfigurationFunction": "WAP_1_InstallWindowsFeature.ps1\\Main",
-                    "Properties": {
-                        
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('WAP2VMName'),'/ConfigureWAP')]",
-            "apiVersion": "2018-10-01",
-            "location": "[parameters('RGLocation')]",
-            "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP2VMName'))]"
-            ],
-            "properties": {
-                "publisher": "Microsoft.Powershell",
-                "type": "DSC",
-                "typeHandlerVersion": "2.19",
-                "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
-                    "ConfigurationFunction": "WAP_1_InstallWindowsFeature.ps1\\Main",
-                    "Properties": {
-                        
-                    }
-                }
-            }
-        },
-       
-        {
-            "name": "[concat(variables('WAP1VMName'), '/InstallWAP')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('RGLocation')]",
-            "apiVersion": "2018-10-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'ConfigureWAP')]"
-            ],
-            "tags": {
-              "displayName": "DeployWAPFarm"
-            },
-            "properties": {
-              "publisher": "Microsoft.Compute",
-              "type": "CustomScriptExtension",
-              "typeHandlerVersion": "1.9",
-              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "[parameters('DeployWAPFarmTemplateUri')]"
-                ]
-              },
-              "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('DeployWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'))]"
-              }
-            }
-        },
-         {
-            "name": "[concat(variables('WAP2VMName'), '/JoinWAP')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "location": "[parameters('RGLocation')]",
-            "apiVersion": "2018-10-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP2VMName'), 'ConfigureWAP')]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'InstallWAP')]"
-            ],
-            "tags": {
-              "displayName": "JoinWAPFarm"
-            },
-            "properties": {
-              "publisher": "Microsoft.Compute",
-              "type": "CustomScriptExtension",
-              "typeHandlerVersion": "1.9",
-              "forceUpdateTag": "[parameters('DscExtensionUpdateTagVersion')]",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                "fileUris": [
-                  "[parameters('JoinWAPFarmTemplateUri')]"
-                ]
-              },
-              "protectedSettings": {
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', parameters('JoinWAPFarmTemplateName'), ' -ADFSsvcusername ', parameters('ADFSSvcUsername'), ' -ADFSsvcpassword ', parameters('ADFSSvcPassword'), ' -PFXFilePath ', parameters('PFXFilePath'), ' -CertFolderPath ', parameters('CertFolderPath'), ' -DomainFQDN ', parameters('DomainFQDN'), ' -DomainNETBIOS ', parameters('DomainNETBIOS'),' -PFXPassword ', parameters('PFXPassword'), ' -ADFSUrl ', parameters('ADFSUrl'), ' -ADFSLoadBalancerAddress ', parameters('ADFSLoadBalancerAddress'))]"
-              }
             }
         }
         

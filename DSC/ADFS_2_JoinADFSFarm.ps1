@@ -61,7 +61,7 @@ Configuration Main
         Script JoinADFSFarm
         {
             SetScript = {
-                
+                Import-Module ADFS
                 Add-AdfsFarmNode `
                     -Credential $Using:AdminCreds `
                     -PrimaryComputerName $Using:PrimaryADFSServer `

@@ -91,7 +91,6 @@ $deployparmsADFS=@{
     "DomainJoinPassword"           = $ConfigFileContent.Settings.Credentials.DomainJoin.Password
     "ADFSLoadBalancerAddress"      = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
     "ADFSUrl"                      = $ConfigFileContent.Settings.ADFSConf.URL
-    "CertFolderPath"               = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
     "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "ADFSInstallUsername"          = $ConfigFileContent.Settings.ADFSConf.InstallAccount.Username
@@ -123,18 +122,15 @@ $deployparmsWAP=@{
     "LocalAdminUsername"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Username
     "LocalAdminPassword"           = $ConfigFileContent.Settings.Credentials.LocalAdmin.Password
     "ADFSUrl"                      = $ConfigFileContent.Settings.ADFSConf.URL
-    "CertFolderPath"               = $ConfigFileContent.Settings.ADFSConf.CertFolderPath
     "ADFSSvcUsername"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Username
     "ADFSSvcPassword"              = $ConfigFileContent.Settings.ADFSConf.ServiceAccount.Password
     "PFXFilePath"                  = $ConfigFileContent.Settings.ADFSConf.PFXFilePath
     "PFXThumbprint"                = $ConfigFileContent.Settings.ADFSConf.PFXThumbprint
     "PFXPassword"                  = $ConfigFileContent.Settings.ADFSConf.PFXPassword
+    "RootCAFilePath"               = $ConfigFileContent.Settings.ADFSConf.RootCAFilePath
+    "RootCAThumbprint"             = $ConfigFileContent.Settings.ADFSConf.RootCAThumbprint
     "ADFSLoadBalancerAddress"      = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
-    "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/WAP_1_InstallWindowsFeature.zip"
-    "DeployWAPFarmTemplateName"    = "WAP_1_Install.ps1"
-    "DeployWAPFarmTemplateUri"     = "$($GitAssetLocation)Scripts/WAP_1_Install.ps1"
-    "JoinWAPFarmTemplateName"      = "WAP_2_JoinFarm.ps1"
-    "JoinWAPFarmTemplateUri"       = "$($GitAssetLocation)Scripts/WAP_2_JoinFarm.ps1"
+    "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/WAP.zip"
     "DscExtensionUpdateTagVersion" = $guid
 }
 
@@ -168,7 +164,7 @@ $version ++
 try{
     
     New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
-    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
+    New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{
     $error[0].Exception
