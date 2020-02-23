@@ -15,11 +15,11 @@ Configuration Main
         [string]$PFXThumbprint,
         
         [Parameter(Mandatory)]
-        [securestring]$PFXPassword,
+        [System.Management.Automation.PSCredential]$PFXPassword,
 
         [Parameter(Mandatory)]
-	    [string]$ADFSUrl,
-
+        [string]$ADFSUrl,
+        
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30
     )
@@ -39,6 +39,11 @@ Configuration Main
             ActionAfterReboot = 'ContinueConfiguration'            
             ConfigurationMode = 'ApplyOnly'            
             RebootNodeIfNeeded = $true
+        }
+        WindowsFeature installADFS  #install ADFS
+        {
+            Ensure = "Present"
+            Name   = "ADFS-Federation"
         }
         xPfxImport ADFSCert
         {
