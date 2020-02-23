@@ -58,6 +58,10 @@ Configuration Main
             SetScript = {
                 Start-Transcript -Path C:\WindowsAzure\SetScript.txt
                 Import-Module ADFS
+                Write-Output $DomainCreds
+                Write-Output $PFXThumbprint
+                Write-Output $ADFSUrl
+                Write-Output $ADFSSvcCreds
                 Install-AdfsFarm `
                     -Credential $DomainCreds `
                     -CertificateThumbprint $PFXThumbprint `

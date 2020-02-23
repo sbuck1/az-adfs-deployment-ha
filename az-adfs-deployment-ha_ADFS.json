@@ -91,10 +91,10 @@
             "type": "securestring"
         },
         "PFXThumbprint": {
-            "type": "securestring"
+            "type": "string"
         },
         "OUPath": {
-            "type": "securestring"
+            "type": "string"
         },
         "nesteddomainjoinurl": {
             "type": "securestring"
