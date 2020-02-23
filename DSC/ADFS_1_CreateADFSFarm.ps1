@@ -57,17 +57,17 @@ Configuration Main
         {
             SetScript = {
                 Start-Transcript -Path C:\WindowsAzure\SetScript.txt
-                Write-Output $DomainCreds
-                Write-Output $PFXThumbprint
-                Write-Output $ADFSUrl
-                Write-Output $ADFSSvcCreds
+                Write-Output $Using:DomainCreds
+                Write-Output $Using:PFXThumbprint
+                Write-Output $Using:ADFSUrl
+                Write-Output $Using:ADFSSvcCreds
                 Import-Module ADFS
                 Install-AdfsFarm `
-                    -Credential $DomainCreds `
-                    -CertificateThumbprint $PFXThumbprint `
-                    -FederationServiceName $ADFSUrl `
+                    -Credential $Using:DomainCreds `
+                    -CertificateThumbprint $Using:PFXThumbprint `
+                    -FederationServiceName $Using:ADFSUrl `
                     -FederationServiceDisplayName "ADFS" `
-                    -ServiceAccountCredential $ADFSSvcCreds `
+                    -ServiceAccountCredential $Using:ADFSSvcCreds `
                     -OverwriteConfiguration
                 Stop-Transcript
             }
