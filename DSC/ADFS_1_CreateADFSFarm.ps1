@@ -57,6 +57,7 @@ Configuration Main
         Script CreateADFSFarm
         {
             SetScript = {
+                Import-Module ADFS
                 Install-AdfsFarm `
                     -Credential $Using:AdminCreds `
                     -CertificateThumbprint $Using:PFXThumbprint `

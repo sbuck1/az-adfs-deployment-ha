@@ -131,6 +131,7 @@ Configuration Main
         Script CreateWAPFarm
         {
             SetScript = {
+                Import-Module webapplicationproxy
                 Install-WebApplicationProxy `
 			        -FederationServiceTrustCredential $Using:ADFSSvcCreds `
                     -CertificateThumbprint $Using:PFXThumbprint`
