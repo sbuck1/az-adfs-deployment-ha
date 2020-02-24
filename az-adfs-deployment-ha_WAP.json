@@ -76,10 +76,10 @@
             "type": "string"
         },
         "RootCAThumbprint": {
-            "type": "securestring"
+            "type": "string"
         },
         "ADFSLoadBalancerAddress": {
-            "type": "securestring"
+            "type": "string"
         },
         "OUPath": {
             "type": "securestring"

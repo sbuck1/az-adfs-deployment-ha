@@ -116,6 +116,8 @@ Configuration Main
             return (Test-Path HKLM:\SOFTWARE\MyMainKey\RebootKey)
             }
             SetScript = {
+                    # Insert a delay before the reboot, otherwise the machine will be stuck in a reboot cycle
+                    Start-Sleep -Seconds (5*60)
                     New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
                     $global:DSCMachineStatus = 1 
                 }
