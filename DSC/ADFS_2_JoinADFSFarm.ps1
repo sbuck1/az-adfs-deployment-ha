@@ -29,7 +29,7 @@ Configuration Main
 
     
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate, AdfsDsc
 
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name MSOnline -Force
@@ -59,27 +59,13 @@ Configuration Main
             Credential = $PFXPassword
             DependsOn = '[WindowsFeature]installADFS'
         }
-        Script JoinADFSFarm
+        AdfsFarmNode JoinADFSFarm
         {
-            SetScript = {
-                Import-Module ADFS
-                Add-AdfsFarmNode `
-                    -Credential $Using:AdminCreds `
-                    -PrimaryComputerName $Using:PrimaryADFSServer `
-                    -PrimaryComputerPort 80 `
-                    -ServiceAccountCredential $Using:ADFSSvcCreds `
-                    -CertificateThumbprint $Using:PFXThumbprint `
-                    -Erroraction Stop
-            }
-            TestScript = {
-                $AdfsService = Get-Service adfssrv
-                if($AdfsService.Status -eq "Running"){return $True}
-                else{return $False}
-            }
-            GetScript = {
-                $AdfsService = Get-Service adfssrv
-                return @{Result = $AdfsService}
-            }
+            FederationServiceName    = $ADFSUrl
+            CertificateThumbprint    = $PFXThumbprint
+            ServiceAccountCredential = $ADFSSvcCreds
+            Credential               = $AdminCreds
+            PrimaryComputerName      = $PrimaryADFSServer
             DependsOn = '[xPfxImport]ADFSCert'
         }
     }

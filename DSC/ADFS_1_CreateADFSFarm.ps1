@@ -24,7 +24,7 @@ Configuration Main
         [Int]$RetryIntervalSec=30
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate, AdfsDsc
     
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
     Install-Module -Name MSOnline -Force
@@ -54,30 +54,14 @@ Configuration Main
             Credential = $PFXPassword
             DependsOn = '[WindowsFeature]installADFS'
         }
-        Script CreateADFSFarm
+        AdfsFarm CreateADFSFarm
         {
-            SetScript = {
-                Import-Module ADFS
-                Install-AdfsFarm `
-                    -Credential $Using:AdminCreds `
-                    -CertificateThumbprint $Using:PFXThumbprint `
-                    -FederationServiceName $Using:ADFSUrl `
-                    -FederationServiceDisplayName "ADFS" `
-                    -ServiceAccountCredential $Using:ADFSSvcCreds `
-                    -OverwriteConfiguration
-            }
-            TestScript = {
-               
-                $AdfsService = Get-Service adfssrv
-                if($AdfsService.Status -eq "Running"){return $True}
-                else{return $False}
-            }
-            GetScript = {
-                $AdfsService = Get-Service adfssrv
-                return @{Result = $AdfsService}
-            }
+            FederationServiceName        = $ADFSUrl
+            FederationServiceDisplayName = 'ADFS Service'
+            CertificateThumbprint        = $PFXThumbprint
+            ServiceAccountCredential     = $ADFSSvcCreds
+            Credential                   = $AdminCreds
             DependsOn = '[xPfxImport]ADFSCert'
         }
-
     }
 }

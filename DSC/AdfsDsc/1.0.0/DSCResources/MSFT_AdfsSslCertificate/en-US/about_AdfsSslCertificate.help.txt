@@ -1,0 +1,55 @@
+.NAME
+    AdfsSslCertificate
+
+.DESCRIPTION
+    The AdfsSslCertificate Dsc resource manages the SSL certificate used for HTTPS binding for Active Directory
+    Federation Services
+
+    On Server 2016 and above, this is a multi-node resource, meaning it only has to run on the primary and all
+    nodes in the farm will be updated. On Server 2012R2, run the command on each ADFS server in the ADFS farm.
+
+    Note: in order to succesfully update the certificate binding on all farm members, WinRM must be configured on
+    all remote nodes and using the standard HTTP listener.
+
+.PARAMETER CertificateType
+    Key - String
+    Allowed values: Https-Binding
+    Specifies the certificate type, must be 'Https-Binding'.
+
+.PARAMETER Thumbprint
+    Required - String
+    Specifies the thumbprint of the certificate to use.
+
+.PARAMETER RemoteCredential
+    Write - String
+    Specifies the credential to use to connect to WinRM on all the members of the ADFS farm.
+
+.EXAMPLE 1
+
+This configuration will set the specified certificate for HTTPS bindings for AD FS using the remote credential
+to connect to all the federation servers in the farm.
+
+Configuration AdfsSslCertificate_Config
+{
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [System.Management.Automation.PSCredential]
+        $Credential
+    )
+
+    Import-DscResource -ModuleName AdfsDsc
+
+    Node localhost
+    {
+        AdfsSslCertificate SslCertificate
+        {
+            CertificateType  = 'Https-Binding'
+            Thumbprint       = 'FC85DDB0FC58E63D8CB52654F22E4BE7900FE349'
+            RemoteCredential = $Credential
+        }
+    }
+}
+
+
