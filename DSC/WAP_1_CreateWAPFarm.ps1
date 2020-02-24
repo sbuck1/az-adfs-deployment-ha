@@ -83,6 +83,7 @@ Configuration Main
             SourcePath = $PFXFilePath
             Type = "File"
             Ensure = "Present"
+            DependsOn = "[WindowsFeature]WebAppProxy"
         }
         File ADFSRootCAFile
         {
@@ -92,6 +93,7 @@ Configuration Main
             SourcePath = $RootCAFilePath
             Type = "File"
             Ensure = "Present"
+            DependsOn = "[WindowsFeature]WebAppProxy"
         }
         xPfxImport ADFSCert
         {
