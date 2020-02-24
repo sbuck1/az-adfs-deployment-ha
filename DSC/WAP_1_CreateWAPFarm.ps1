@@ -16,6 +16,9 @@ Configuration Main
 
         [Parameter(Mandatory)]
         [string]$RootCAThumbprint,
+
+        [Parameter(Mandatory)]
+        [string]$ADFSLoadBalancerAddress,
         
         [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$PFXPassword,
@@ -27,7 +30,7 @@ Configuration Main
         [Int]$RetryIntervalSec=30
     )
 
-    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate
+    Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate, NetworkingDsc
     
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 
@@ -65,6 +68,12 @@ Configuration Main
         {
             Ensure = "Present"
             Name = "Telnet-Client"
+        }
+        HostsFile HostsFileAddEntry
+        {
+            HostName  = $ADFSUrl
+            IPAddress = $ADFSLoadBalancerAddress
+            Ensure    = 'Present'
         }
         File ADFSPFXFile
         {
@@ -121,7 +130,8 @@ Configuration Main
                 return @{Result = $AdfsService}
             }
             DependsOn = @("[xPfxImport]ADFSCert",
-                          "[xCertificateImport]RootCACert")
+                          "[xCertificateImport]RootCACert",
+                          "[HostsFile]HostsFileAddEntry")
         }
 
     }

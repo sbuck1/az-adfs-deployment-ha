@@ -459,7 +459,9 @@
                         "PFXThumbprint": "[parameters('PFXThumbprint')]",
                         "ADFSUrl": "[parameters('ADFSUrl')]",
                         "RootCAFilePath": "[parameters('RootCAFilePath')]",
-                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]"
+                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]", 
+                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]"
+                        
                         
                     }
                 },
