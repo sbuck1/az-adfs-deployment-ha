@@ -476,12 +476,11 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('WAP2VMName'),'/JoinWAPFarm')]",
+            "name": "[concat(variables('WAP2VMName'),'/CreateWAPFarm')]",
             "apiVersion": "2018-10-01",
             "location": "[parameters('RGLocation')]",
             "dependsOn": [
-                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP2VMName'))]",
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('WAP1VMName'), 'CreateWAPFarm')]"
+                "[concat('Microsoft.Compute/virtualMachines/', variables('WAP2VMName'))]"
             ],
             "properties": {
                 "publisher": "Microsoft.Powershell",
@@ -491,7 +490,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "ModulesUrl": "[parameters('wapDSCConfigurationurl')]",
-                    "ConfigurationFunction": "WAP_2_JoinWAPFarm.ps1\\Main",
+                    "ConfigurationFunction": "WAP_1_CreateWAPFarm.ps1\\Main",
                     "Properties": {
                         "ADFSSvcCreds": {
                             "UserName": "[parameters('ADFSSvcUsername')]",
@@ -505,7 +504,9 @@
                         "PFXThumbprint": "[parameters('PFXThumbprint')]",
                         "ADFSUrl": "[parameters('ADFSUrl')]",
                         "RootCAFilePath": "[parameters('RootCAFilePath')]",
-                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]"
+                        "RootCAThumbprint": "[parameters('RootCAThumbprint')]", 
+                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]"
+                        
                         
                     }
                 },

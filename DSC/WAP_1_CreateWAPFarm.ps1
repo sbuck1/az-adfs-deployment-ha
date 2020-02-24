@@ -110,6 +110,20 @@ Configuration Main
             Store      = 'Root'
             DependsOn = '[File]ADFSRootCAFile'
         }
+        Script Reboot
+        {
+            TestScript = {
+            return (Test-Path HKLM:\SOFTWARE\MyMainKey\RebootKey)
+            }
+            SetScript = {
+                    New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
+                    $global:DSCMachineStatus = 1 
+                }
+            GetScript = { return @{result = 'result'}}
+            DependsOn = @("[xPfxImport]ADFSCert",
+                          "[xCertificateImport]RootCACert",
+                          "[HostsFile]HostsFileAddEntry")
+        }
         Script CreateWAPFarm
         {
             SetScript = {
@@ -117,7 +131,8 @@ Configuration Main
 			        -FederationServiceTrustCredential $Using:ADFSSvcCreds `
                     -CertificateThumbprint $Using:PFXThumbprint`
                     -FederationServiceName $Using:ADFSUrl -ErrorAction Stop
-                
+                New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
+                $global:DSCMachineStatus = 1 
             }
             TestScript = {
                 $AdfsService = Get-Service adfssrv
@@ -129,9 +144,7 @@ Configuration Main
                 $AdfsService = Get-Service adfssrv
                 return @{Result = $AdfsService}
             }
-            DependsOn = @("[xPfxImport]ADFSCert",
-                          "[xCertificateImport]RootCACert",
-                          "[HostsFile]HostsFileAddEntry")
+            DependsOn = "[Script]Reboot"
         }
 
     }
