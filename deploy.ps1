@@ -144,7 +144,7 @@ if($RGADFSNotPresent){Remove-Variable $RGADFSNotPresent -Force -ErrorAction Sile
 if($RGWAPNotPresent){Remove-Variable $RGWAPNotPresent -Force -ErrorAction SilentlyContinue}
 
 Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGADFSNotPresent -ErrorAction SilentlyContinue
-Get-AzResourceGroup -Name $RGNameADFS -ErrorVariable RGWAPNotPresent -ErrorAction SilentlyContinue
+Get-AzResourceGroup -Name $RGNameWAP -ErrorVariable RGWAPNotPresent -ErrorAction SilentlyContinue
 
 try {
     if ($RGADFSNotPresent)
@@ -163,8 +163,8 @@ $version ++
 
 try{
     
-    New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
-    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
+    #New-AzResourceGroupDeployment -ResourceGroupName $RGNameADFS -TemplateParameterObject $deployparmsADFS -TemplateFile $TemplateFileADFS -Name "$($DeploymentName)_adfs_$($version)" -AsJob
+    New-AzResourceGroupDeployment -ResourceGroupName $RGNameWAP -TemplateParameterObject $deployparmsWAP -TemplateFile $TemplateFileWAP -Name "$($DeploymentName)_wap_$($version)" -AsJob
 
 }catch{
     $error[0].Exception
@@ -179,8 +179,8 @@ New-TimeSpan -Start $startTime -End $endTime | Select Hours, Minutes, Seconds
 # FINALIZE
 
 # Get the public ip address of the WAP LoadBalancer
-$PiP = Get-AzPublicIpAddress -ResourceGroupName $RGNameWAP | Select-Object ipaddress
-$Pip = $Pip.IPAddress
+#$PiP = Get-AzPublicIpAddress -ResourceGroupName $RGNameWAP | Select-Object ipaddress
+#$Pip = $Pip.IPAddress
 
 # Update your hosts file or public DNS with the following settings:
 write-host "Update your hosts file or public DNS with the following settings:"

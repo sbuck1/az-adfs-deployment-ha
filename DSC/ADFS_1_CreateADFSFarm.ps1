@@ -52,6 +52,7 @@ Configuration Main
             Location   = 'LocalMachine'
             Store      = 'My'
             Credential = $PFXPassword
+            DependsOn = '[WindowsFeature]installADFS'
         }
         Script CreateADFSFarm
         {
