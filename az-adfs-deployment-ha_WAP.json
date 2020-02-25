@@ -81,6 +81,9 @@
         "ADFSLoadBalancerAddress": {
             "type": "string"
         },
+        "PrimaryADFSIPAddress": {
+            "type": "string"
+        },
         "OUPath": {
             "type": "securestring"
         },
@@ -460,8 +463,8 @@
                         "ADFSUrl": "[parameters('ADFSUrl')]",
                         "RootCAFilePath": "[parameters('RootCAFilePath')]",
                         "RootCAThumbprint": "[parameters('RootCAThumbprint')]", 
-                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]"
-                        
+                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]",
+                        "PrimaryADFSIPAddress": "[parameters('PrimaryADFSIPAddress')]"
                         
                     }
                 },
@@ -505,9 +508,9 @@
                         "ADFSUrl": "[parameters('ADFSUrl')]",
                         "RootCAFilePath": "[parameters('RootCAFilePath')]",
                         "RootCAThumbprint": "[parameters('RootCAThumbprint')]", 
-                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]"
-                        
-                        
+                        "ADFSLoadBalancerAddress": "[parameters('ADFSLoadBalancerAddress')]",
+                        "PrimaryADFSIPAddress": "[parameters('PrimaryADFSIPAddress')]"
+
                     }
                 },
                 "protectedSettings": {

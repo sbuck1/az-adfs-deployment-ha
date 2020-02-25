@@ -130,6 +130,7 @@ $deployparmsWAP=@{
     "RootCAFilePath"               = $ConfigFileContent.Settings.ADFSConf.RootCAFilePath
     "RootCAThumbprint"             = $ConfigFileContent.Settings.ADFSConf.RootCAThumbprint
     "ADFSLoadBalancerAddress"      = $ConfigFileContent.Settings.ADFSConf.LoadBalancerAddress
+    "PrimaryADFSIPAddress"         = $ConfigFileContent.Settings.VMs.ADFS.SRV1.IPAddress
     "wapDSCConfigurationurl"       = "$($GitAssetLocation)DSC/WAP.zip"
     "DscExtensionUpdateTagVersion" = $guid
 }

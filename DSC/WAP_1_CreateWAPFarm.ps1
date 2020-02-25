@@ -26,6 +26,9 @@ Configuration Main
         [Parameter(Mandatory)]
         [string]$ADFSUrl,
 
+        [Parameter(Mandatory)]
+        [string]$PrimaryADFSIPAddress,
+
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=60
     )
@@ -72,7 +75,7 @@ Configuration Main
         HostsFile HostsFileAddEntry
         {
             HostName  = $ADFSUrl
-            IPAddress = $ADFSLoadBalancerAddress
+            IPAddress = $PrimaryADFSIPAddress
             Ensure    = 'Present'
         }
         File ADFSPFXFile
@@ -136,8 +139,6 @@ Configuration Main
 			        -FederationServiceTrustCredential $Using:ADFSSvcCreds `
                     -CertificateThumbprint $Using:PFXThumbprint`
                     -FederationServiceName $Using:ADFSUrl -ErrorAction Stop
-                New-Item -Path HKLM:\SOFTWARE\MyMainKey\RebootKey -Force
-                $global:DSCMachineStatus = 1 
             }
             TestScript = {
                 $AdfsService = Get-Service adfssrv
@@ -150,6 +151,13 @@ Configuration Main
                 return @{Result = $AdfsService}
             }
             DependsOn = "[Script]Reboot"
+        }
+        HostsFile HostsFileAddEntry
+        {
+            HostName  = $ADFSUrl
+            IPAddress = $ADFSLoadBalancerAddress
+            Ensure    = 'Present'
+            DependsOn = "[Script]CreateWAPFarm"
         }
 
     }
