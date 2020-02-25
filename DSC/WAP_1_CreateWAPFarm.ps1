@@ -152,12 +152,19 @@ Configuration Main
             }
             DependsOn = "[Script]Reboot"
         }
+        HostsFile HostsFileRemoveEntry_1
+        {
+            HostName  = $ADFSUrl
+            IPAddress = $PrimaryADFSIPAddress
+            Ensure    = 'Absent'
+            DependsOn = "[Script]CreateWAPFarm"
+        }
         HostsFile HostsFileAddEntry_2
         {
             HostName  = $ADFSUrl
             IPAddress = $ADFSLoadBalancerAddress
             Ensure    = 'Present'
-            DependsOn = "[Script]CreateWAPFarm"
+            DependsOn = "[HostsFile]HostsFileRemoveEntry_1"
         }
 
     }
