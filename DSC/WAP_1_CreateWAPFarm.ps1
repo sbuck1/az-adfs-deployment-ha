@@ -72,7 +72,7 @@ Configuration Main
             Ensure = "Present"
             Name = "Telnet-Client"
         }
-        HostsFile HostsFileAddEntry_1
+        HostsFile HostsFileAddEntry
         {
             HostName  = $ADFSUrl
             IPAddress = $PrimaryADFSIPAddress
@@ -129,7 +129,7 @@ Configuration Main
             GetScript = { return @{result = 'result'}}
             DependsOn = @("[xPfxImport]ADFSCert",
                           "[xCertificateImport]RootCACert",
-                          "[HostsFile]HostsFileAddEntry_1")
+                          "[HostsFile]HostsFileAddEntry")
         }
         Script CreateWAPFarm
         {
@@ -151,20 +151,6 @@ Configuration Main
                 return @{Result = $AdfsService}
             }
             DependsOn = "[Script]Reboot"
-        }
-        HostsFile HostsFileRemoveEntry_1
-        {
-            HostName  = $ADFSUrl
-            IPAddress = $PrimaryADFSIPAddress
-            Ensure    = 'Absent'
-            DependsOn = "[Script]CreateWAPFarm"
-        }
-        HostsFile HostsFileAddEntry_2
-        {
-            HostName  = $ADFSUrl
-            IPAddress = $ADFSLoadBalancerAddress
-            Ensure    = 'Present'
-            DependsOn = "[HostsFile]HostsFileRemoveEntry_1"
         }
 
     }
