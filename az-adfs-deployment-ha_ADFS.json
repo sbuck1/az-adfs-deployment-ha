@@ -405,7 +405,7 @@
             "resources": [],
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('AvailabilitySetADFS'))]",
-                "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS1VMNic'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('ADFS2VMNic'))]",
                 "[variables('storageAccountNameADFS')]"
             ]
         },
