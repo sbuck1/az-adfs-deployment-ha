@@ -27,7 +27,7 @@ Configuration Main
         [string]$ADFSUrl,
 
         [Int]$RetryCount=20,
-        [Int]$RetryIntervalSec=30
+        [Int]$RetryIntervalSec=60
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration, xCertificate, NetworkingDsc
